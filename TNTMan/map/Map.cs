@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TNTMan.entitees;
 using TNTMan.map.blocs;
 
@@ -22,7 +22,7 @@ namespace TNTMan.map
         {
             int x, y;
             listeBlocs = new Bloc[LARGEUR_GRILLE, LONGUEUR_GRILLE];
-            for (x = 0; x < LARGEUR_GRILLE; x++)
+            for(x = 0; x < LARGEUR_GRILLE;x++)
             {
                 listeBlocs[x, 0] = new BlocIncassable();
                 listeBlocs[x, LONGUEUR_GRILLE - 1] = new BlocIncassable();
@@ -32,19 +32,19 @@ namespace TNTMan.map
                 listeBlocs[0, y] = new BlocIncassable();
                 listeBlocs[LARGEUR_GRILLE - 1, y] = new BlocIncassable();
             }
-            for (x = 2; x < LARGEUR_GRILLE - 1; x += 2)
-                for (y = 2; y < LONGUEUR_GRILLE - 1; y += 2)
+            for (x = 2; x < LARGEUR_GRILLE-1; x+=2)
+                for (y = 2; y < LONGUEUR_GRILLE - 1; y+=2)
                 {
                     listeBlocs[x, y] = new BlocIncassable();
                 }
 
-            for (int i = 0; i < 60;)
+            for(int i = 0;i<60;)
             {
                 x = Program.random.Next(1, LARGEUR_GRILLE - 1);
                 y = Program.random.Next(1, LONGUEUR_GRILLE - 1);
 
                 // on ne génére pas dans les coins de la grille
-                if ((x < 3 && y < 3)
+                if((x < 3 && y < 3)
                 || (x < 3 && y > LONGUEUR_GRILLE - 4)
                 || (x > LARGEUR_GRILLE - 4 && y < 3)
                 || (x > LARGEUR_GRILLE - 4 && y > LONGUEUR_GRILLE - 4))
