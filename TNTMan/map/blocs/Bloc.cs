@@ -1,7 +1,9 @@
-﻿namespace TNTMan.map
+﻿namespace TNTMan.map.blocs
 {
     internal class Bloc
     {
+        public static readonly int TAILLE_BLOC = 32;
+
         int id;
         int durabilite;
         bool solide;

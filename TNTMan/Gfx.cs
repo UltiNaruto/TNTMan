@@ -46,9 +46,23 @@ namespace TNTMan
                 SDL.SDL_Quit();
                 return 4;
             }
+
             changerEcran(new Ecran_Jouer());
 
             return 0;
+        }
+
+        internal static Size getResolution()
+        {
+            int w, h;
+            if(rendu == IntPtr.Zero)
+            {
+                Program.MessageErr("Impossible d'obtenir la taille de la fenêtre");
+                deinitialiser_2d();
+                return new Size(-1, -1);
+            }
+            SDL.SDL_GetRendererOutputSize(rendu, out w, out h);
+            return new Size(w, h);
         }
 
         internal static void deinitialiser_2d()
@@ -70,7 +84,7 @@ namespace TNTMan
 
         internal static void nettoyerEcran(Color color)
         {
-            SDL.SDL_SetRenderDrawColor(rendu, (byte)color.R, (byte)color.G, (byte)color.B, (byte)color.A);
+            SDL.SDL_SetRenderDrawColor(rendu, color.R, color.G, color.B, color.A);
             SDL.SDL_RenderClear(rendu);
         }
 
@@ -125,6 +139,33 @@ namespace TNTMan
             Program.MessageErr("chargerImage() : Non implémenté");
             deinitialiser_2d();
             return IntPtr.Zero;
+        }
+
+        internal static void dessinerRectangle(int x, int y, int w, int h, int px, Color couleur)
+        {
+            SDL.SDL_Rect rect = new SDL.SDL_Rect();
+            rect.x = x;
+            rect.y = y;
+            rect.w = w;
+            rect.h = h;
+            if (rendu == IntPtr.Zero) return;
+            SDL.SDL_RenderSetScale(rendu, (float)px, (float)px);
+            SDL.SDL_SetRenderDrawColor(rendu, couleur.R, couleur.G, couleur.B, couleur.A);
+            SDL.SDL_RenderDrawRect(rendu, ref rect);
+            SDL.SDL_RenderSetScale(rendu, 1.0f, 1.0f);
+        }
+
+        internal static void remplirRectangle(int x, int y, int w, int h, int px, Color couleur_remplissage, Color couleur)
+        {
+            SDL.SDL_Rect rect = new SDL.SDL_Rect();
+            rect.x = x;
+            rect.y = y;
+            rect.w = w;
+            rect.h = h;
+            if (rendu == IntPtr.Zero) return;
+            SDL.SDL_SetRenderDrawColor(rendu, couleur_remplissage.R, couleur_remplissage.G, couleur_remplissage.B, couleur_remplissage.A);
+            SDL.SDL_RenderFillRect(rendu, ref rect);
+            dessinerRectangle(x, y, w, h, px, couleur);
         }
     }
 }
