@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TNTMan.entitees;
 using TNTMan.map.blocs;
 
