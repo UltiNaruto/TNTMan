@@ -1,4 +1,4 @@
-using SDL2;
+﻿using SDL2;
 using System;
 using System.Drawing;
 using TNTMan.ecrans;
@@ -64,7 +64,7 @@ namespace TNTMan
 
             if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == -1)
             {
-                Program.MessageErr("ERREUR ({0})\n", SDL.SDL_GetError());
+                Program.MessageErr("IMG_Init: ERREUR ({0})\n", SDL.SDL_GetError());
                 SDL.SDL_DestroyRenderer(rendu);
                 SDL.SDL_DestroyWindow(fenetre);
                 SDL.SDL_Quit();

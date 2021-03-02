@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using TNTMan.map;
 using TNTMan.map.blocs;
@@ -35,18 +35,9 @@ namespace TNTMan.entitees
             return couleur;
         }
 
-        public bool enCollisionAvecBloc(Map map, float bloc_x, float bloc_y, float x, float y)
+        public bool enCollisionAvecBloc(Map map, PointF pos)
         {
-            Size resolution = Gfx.getResolution();
-            Size tailleGrille = new Size(Map.LARGEUR_GRILLE * Bloc.TAILLE_BLOC, Map.LONGUEUR_GRILLE * Bloc.TAILLE_BLOC);
-            Rectangle joueurRect = new Rectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(x * Bloc.TAILLE_BLOC) - 8, (resolution.Height - tailleGrille.Height) / 2 + (int)(y * Bloc.TAILLE_BLOC) - 8, 16, 16);
-            Rectangle blocRect = Rectangle.Empty;
-
-            if(map.getBlocA((int)bloc_x, (int)bloc_y) == null)
-                return false;
-            
-            blocRect = new Rectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(bloc_x * Bloc.TAILLE_BLOC), (resolution.Height - tailleGrille.Height) / 2 + (int)(bloc_y * Bloc.TAILLE_BLOC), Bloc.TAILLE_BLOC, Bloc.TAILLE_BLOC);
-            return Rectangle.Intersect(blocRect, joueurRect) != Rectangle.Empty;
+            return map.getBlocA((int)pos.X, (int)pos.Y) != null;
         }
 
         public override void deplacer(float _ax, float _ay)
@@ -60,18 +51,21 @@ namespace TNTMan.entitees
             float vitesse_deplacement_restante_abs_y = Math.Min(Math.Abs(vitesse.Y - vitesse_deplacement), vitesse_deplacement);
             float vx = Math.Clamp(vitesse.X, -1 * vitesse_deplacement_restante_abs_x, vitesse_deplacement_restante_abs_x);
             float vy = Math.Clamp(vitesse.Y, -1 * vitesse_deplacement_restante_abs_y, vitesse_deplacement_restante_abs_y);
-            // vérifier la collision avec les blocs
-            if (enCollisionAvecBloc(map, (int)(position.X + vx), (int)(position.Y + vy), position.X + vx * 2, position.Y + vy * 2))
+            if (vx != 0 || vy != 0)
             {
-                vitesse.X = 0;
-                vitesse.Y = 0;
-            }
-            else
-            {
-                position.X += vx;
-                position.Y += vy;
-                vitesse.X -= vx;
-                vitesse.Y -= vy;
+                // vérifier la collision avec les blocs
+                if (enCollisionAvecBloc(map, Utils.ArrondiPositionBloc(position.X + vx, position.Y + vy)))
+                {
+                    vitesse.X = 0;
+                    vitesse.Y = 0;
+                }
+                else
+                {
+                    position.X = (float)Math.Round(position.X, 2) + vx;
+                    position.Y = (float)Math.Round(position.Y, 2) + vy;
+                    vitesse.X = (float)Math.Round(vitesse.X, 2) - vx;
+                    vitesse.Y = (float)Math.Round(vitesse.Y, 2) - vy;
+                }
             }
         }
     }

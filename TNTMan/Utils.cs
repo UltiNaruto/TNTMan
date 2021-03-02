@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace TNTMan
@@ -32,6 +33,63 @@ namespace TNTMan
                 liste.Add(Marshal.ReadByte(ptr + i));
 
             return liste.ToArray();
+        }
+
+        internal static PointF ArrondiPositionBloc(PointF pos)
+        {
+            PointF diff = new PointF(pos.X - (int)pos.X, pos.Y - (int)pos.Y);
+            if (pos.X < 0.0f)
+            {
+                if (diff.X > -0.24f)
+                {
+                    pos.X += 1.0f;
+                }
+                if (diff.X < -0.76f)
+                {
+                    pos.X -= 1.0f;
+                }
+            }
+            if (pos.X > 0.0f)
+            {
+                if (diff.X < 0.24f)
+                {
+                    pos.X -= 1.0f;
+                }
+                if (diff.X > 0.76f)
+                {
+                    pos.X += 1.0f;
+                }
+            }
+            if (pos.Y < 0.0f)
+            {
+                if (diff.Y > -0.24f)
+                {
+                    pos.Y += 1.0f;
+                }
+                if (diff.Y < -0.76f)
+                {
+                    pos.Y -= 1.0f;
+                }
+            }
+            if (pos.Y > 0.0f)
+            {
+                if (diff.Y < 0.24f)
+                {
+                    pos.Y -= 1.0f;
+                }
+                if (diff.Y > 0.76f)
+                {
+                    pos.Y += 1.0f;
+                }
+            }
+            pos.X = (int)pos.X;
+            pos.Y = (int)pos.Y;
+            return pos;
+        }
+
+        internal static PointF ArrondiPositionBloc(float x, float y)
+        {
+            return ArrondiPositionBloc(new PointF(x, y));
         }
     }
 }
