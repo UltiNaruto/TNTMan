@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Threading;
 using SDL2;
@@ -21,7 +21,7 @@ namespace TNTMan
 
         static void Main(string[] args)
         {
-            random = new Random(DateTime.Now.DayOfYear * DateTime.Now.Day);
+            random = new Random((int)DateTime.Now.Ticks);
             if (Gfx.initialiser_2d() != 0)
             {
                 MessageErr("2D non initialisé! Fermeture...");
