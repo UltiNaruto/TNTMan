@@ -1,10 +1,13 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using TNTMan.map;
 
 namespace TNTMan.entitees
 {
     class Entite
     {
         protected PointF position;
+        protected PointF vitesse;
         protected bool statut;
 
         public void tuer()
@@ -27,9 +30,13 @@ namespace TNTMan.entitees
             position = _position;
         }
 
-        public void deplacer(float x, float y)
+        public virtual void deplacer(float _ax, float _ay)
         {
-            position = new PointF(position.X + x, position.Y + y);
+            vitesse = new PointF(Math.Clamp(vitesse.X + _ax, -1.0f, 1.0f), Math.Clamp(vitesse.Y + _ay, -1.0f, 1.0f));
+        }
+
+        public virtual void mettreAJour(Map map)
+        {
         }
     }
 }
