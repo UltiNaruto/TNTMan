@@ -21,7 +21,7 @@ namespace TNTMan
 
         static void Main(string[] args)
         {
-            random = new Random((int)DateTime.Now.Ticks);
+            random = new Random(DateTime.Now.DayOfYear * DateTime.Now.Day);
             if (Gfx.initialiser_2d() != 0)
             {
                 MessageErr("2D non initialisé! Fermeture...");
