@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using SDL2;
 
@@ -16,19 +16,20 @@ namespace TNTMan.ecrans
         {
             titre = _titre;
             ecranPrecedent = _ecranPrecedent;
+            arrierePlan = IntPtr.Zero;
         }
 
-        public void dessinerEcran(IntPtr rendu)
+        public virtual void dessinerEcran(IntPtr rendu)
+        {
+            if (arrierePlan == IntPtr.Zero) return;
+        }
+
+        public virtual void gererSouris()
         {
 
         }
 
-        public void gererSouris()
-        {
-
-        }
-
-        public void gererTouches(byte[] etats)
+        public virtual void gererTouches(byte[] etats)
         {
 
         }
