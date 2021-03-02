@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using TNTMan.map;
 using TNTMan.map.blocs;
@@ -42,9 +42,9 @@ namespace TNTMan.entitees
             Rectangle joueurRect = new Rectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(x * Bloc.TAILLE_BLOC) - 8, (resolution.Height - tailleGrille.Height) / 2 + (int)(y * Bloc.TAILLE_BLOC) - 8, 16, 16);
             Rectangle blocRect = Rectangle.Empty;
 
-            if (map.getBlocA((int)bloc_x, (int)bloc_y) == null)
+            if(map.getBlocA((int)bloc_x, (int)bloc_y) == null)
                 return false;
-
+            
             blocRect = new Rectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(bloc_x * Bloc.TAILLE_BLOC), (resolution.Height - tailleGrille.Height) / 2 + (int)(bloc_y * Bloc.TAILLE_BLOC), Bloc.TAILLE_BLOC, Bloc.TAILLE_BLOC);
             return Rectangle.Intersect(blocRect, joueurRect) != Rectangle.Empty;
         }
