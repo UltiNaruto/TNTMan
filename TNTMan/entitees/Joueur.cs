@@ -1,23 +1,14 @@
 ﻿using System;
-<<<<<<< HEAD
 using System.Drawing;
 using TNTMan.map;
 using TNTMan.map.blocs;
-=======
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
->>>>>>> 38b087b (AJOUTS & MODIFICATIONS DE CLASSES)
 
 namespace TNTMan.entitees
 {
     class Joueur : Entite
     {
-        // Attributs
-
         int id;
         Color couleur;
-<<<<<<< HEAD
         float vitesse_deplacement;
         public Joueur(int _id, float _x, float _y)
         {
@@ -32,99 +23,11 @@ namespace TNTMan.entitees
                 couleur = Color.Yellow;
             if (id == 4)
                 couleur = Color.Pink;
-=======
-        float vitesse; // Valeur par défaut ?
-        Score score;
-        int nbBombes;
-        int porteeBombes;
-
-        // Constructeurs 
-
-        /* Constructeur par défaut */
-        Joueur() : base()
-        {
-            this.id = 1;
-            this.couleur = Color.Red;
         }
 
-        /* Constructeur avec choix */
-        Joueur(int newId, Color c)
+        public int getId()
         {
-            this.id = newId;
-            this.couleur = c;
-        }
-
-        // Méthodes
-
-        int GetId()
-        {
-            return this.id;
-        }
-
-        Color GetCouleur()
-        {
-            return this.couleur;
->>>>>>> 38b087b (AJOUTS & MODIFICATIONS DE CLASSES)
-        }
-
-        float GetVitesse()
-        {
-            return this.vitesse;
-        }
-
-        void SetVitesse(float nouvelleVitesse)
-        {
-            if (nouvelleVitesse > 0)
-                this.vitesse = nouvelleVitesse;
-            /* else
-                Message d'erreur */
-        }
-
-        int GetNBTues()
-        {
-            return score.NbTues;
-        }
-
-        int GetNbVictoires()
-        {
-            return score.NbVictoires;
-        }
-
-        int GetNbBombes()
-        {
-            return this.nbBombes;
-        }
-
-        void PoserBombe()
-        {
-
-        }
-
-        void AugmenterPorteeBombe()
-        {
-
-        }
-
-        void DiminuerPorteeBombe()
-        {
-
-        }
-
-        void IncrementerScore()
-        {
-
-        }
-
-        void DecrementerScore()
-        {
-
-        }
-
-        void MettreAJour()
-        {
-
-        }
-
+            return id;
         }
 
         public Color getCouleur()
@@ -139,9 +42,9 @@ namespace TNTMan.entitees
             Rectangle joueurRect = new Rectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(x * Bloc.TAILLE_BLOC) - 8, (resolution.Height - tailleGrille.Height) / 2 + (int)(y * Bloc.TAILLE_BLOC) - 8, 16, 16);
             Rectangle blocRect = Rectangle.Empty;
 
-            if(map.getBlocA((int)bloc_x, (int)bloc_y) == null)
+            if (map.getBlocA((int)bloc_x, (int)bloc_y) == null)
                 return false;
-            
+
             blocRect = new Rectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(bloc_x * Bloc.TAILLE_BLOC), (resolution.Height - tailleGrille.Height) / 2 + (int)(bloc_y * Bloc.TAILLE_BLOC), Bloc.TAILLE_BLOC, Bloc.TAILLE_BLOC);
             return Rectangle.Intersect(blocRect, joueurRect) != Rectangle.Empty;
         }
