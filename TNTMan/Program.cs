@@ -9,13 +9,22 @@ namespace TNTMan
     {
         public static Random random;
 
+        public static void MessageErr(String format, params Object[] args)
+        {
+            SDL.SDL_ShowSimpleMessageBox(
+                SDL.SDL_MessageBoxFlags.SDL_MESSAGEBOX_ERROR,
+                "TNTMan",
+                String.Format(format, args),
+                IntPtr.Zero
+            );
+        }
+
         static void Main(string[] args)
         {
             random = new Random(DateTime.Now.DayOfYear * DateTime.Now.Day);
             if (Gfx.initialiser_2d() != 0)
             {
-                Console.WriteLine("2D non initialisé! Fermeture...");
-                Thread.Sleep(1000);
+                MessageErr("2D non initialisé! Fermeture...");
                 return;
             }
 
