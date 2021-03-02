@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using TNTMan.map;
 
@@ -15,41 +15,35 @@ namespace TNTMan.entitees
         int tempsRestantExplosion;
 
         // Méthodes
-        string GetNom()
+        string getNom()
         {
             return this.nom;
         }
 
-        int GetPortee()
+        int getPortee()
         {
             return this.portee;
         }
 
-        Joueur GetProprietaire()
+        Joueur getProprietaire()
         {
             return this.proprietaire;
         }
 
-        void Attendre()
+        void explose()
         {
-            TimeSpan duree;
-            duree = TimeSpan.FromSeconds(this.tempsRestantExplosion);
-        }
-
-        void Explose()
-        {
-            // En attente 
-            Attendre();
-
             // Explosion enclenchée
         }
 
-        void MettreAJour()
+        public override void mettreAJour()
         {
-
+            if(tempsExplosion > 0)
+                tempsExplosion -= 16; // décrémente de 16 ms par image
+            else
+                explose();
         }
 
-        void PoserBombe()
+        void poserBombe()
         {
             position = proprietaire.getPosition();
         }
