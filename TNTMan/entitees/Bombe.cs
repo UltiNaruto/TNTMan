@@ -1,4 +1,8 @@
-﻿namespace TNTMan.entitees
+﻿using System;
+using System.Drawing;
+using TNTMan.map;
+
+namespace TNTMan.entitees
 {
     class Bombe : Entite
     {
@@ -26,14 +30,28 @@
             return this.proprietaire;
         }
 
+        void Attendre()
+        {
+            TimeSpan duree;
+            duree = TimeSpan.FromSeconds(this.tempsRestantExplosion);
+        }
+
         void Explose()
         {
+            // En attente 
+            Attendre();
 
+            // Explosion enclenchée
         }
 
         void MettreAJour()
         {
 
+        }
+
+        void PoserBombe()
+        {
+            position = proprietaire.getPosition();
         }
     }
 }
