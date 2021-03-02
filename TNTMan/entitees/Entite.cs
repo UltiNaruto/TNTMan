@@ -7,18 +7,22 @@ namespace TNTMan.entitees
     class Entite
     {
         protected PointF position;
+<<<<<<< HEAD
         protected PointF vitesse;
         protected bool statut;
 
+=======
+        private bool statut;
+>>>>>>> 38b087b (AJOUTS & MODIFICATIONS DE CLASSES)
         public void tuer()
         {
             this.statut = false;
         }
-
         public bool estMort()
         {
             return !this.statut;
         }
+<<<<<<< HEAD
 
         public PointF getPosition()
         {
@@ -38,5 +42,7 @@ namespace TNTMan.entitees
         public virtual void mettreAJour(Map map)
         {
         }
+=======
+>>>>>>> 38b087b (AJOUTS & MODIFICATIONS DE CLASSES)
     }
 }

@@ -1,14 +1,23 @@
 ﻿using System;
+<<<<<<< HEAD
 using System.Drawing;
 using TNTMan.map;
 using TNTMan.map.blocs;
+=======
+using System.Collections.Generic;
+using System.Text;
+using System.Drawing;
+>>>>>>> 38b087b (AJOUTS & MODIFICATIONS DE CLASSES)
 
 namespace TNTMan.entitees
 {
     class Joueur : Entite
     {
+        // Attributs
+
         int id;
         Color couleur;
+<<<<<<< HEAD
         float vitesse_deplacement;
         public Joueur(int _id, float _x, float _y)
         {
@@ -23,11 +32,99 @@ namespace TNTMan.entitees
                 couleur = Color.Yellow;
             if (id == 4)
                 couleur = Color.Pink;
+=======
+        float vitesse; // Valeur par défaut ?
+        Score score;
+        int nbBombes;
+        int porteeBombes;
+
+        // Constructeurs 
+
+        /* Constructeur par défaut */
+        Joueur() : base()
+        {
+            this.id = 1;
+            this.couleur = Color.Red;
         }
 
-        public int getId()
+        /* Constructeur avec choix */
+        Joueur(int newId, Color c)
         {
-            return id;
+            this.id = newId;
+            this.couleur = c;
+        }
+
+        // Méthodes
+
+        int GetId()
+        {
+            return this.id;
+        }
+
+        Color GetCouleur()
+        {
+            return this.couleur;
+>>>>>>> 38b087b (AJOUTS & MODIFICATIONS DE CLASSES)
+        }
+
+        float GetVitesse()
+        {
+            return this.vitesse;
+        }
+
+        void SetVitesse(float nouvelleVitesse)
+        {
+            if (nouvelleVitesse > 0)
+                this.vitesse = nouvelleVitesse;
+            /* else
+                Message d'erreur */
+        }
+
+        int GetNBTues()
+        {
+            return score.NbTues;
+        }
+
+        int GetNbVictoires()
+        {
+            return score.NbVictoires;
+        }
+
+        int GetNbBombes()
+        {
+            return this.nbBombes;
+        }
+
+        void PoserBombe()
+        {
+
+        }
+
+        void AugmenterPorteeBombe()
+        {
+
+        }
+
+        void DiminuerPorteeBombe()
+        {
+
+        }
+
+        void IncrementerScore()
+        {
+
+        }
+
+        void DecrementerScore()
+        {
+
+        }
+
+        void MettreAJour()
+        {
+
+        }
+
         }
 
         public Color getCouleur()

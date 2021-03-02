@@ -70,23 +70,9 @@ namespace TNTMan
                 SDL.SDL_Quit();
                 return 4;
             }
-
             changerEcran(new Ecran_Jouer());
 
             return 0;
-        }
-
-        internal static Size getResolution()
-        {
-            int w, h;
-            if(rendu == IntPtr.Zero)
-            {
-                Program.MessageErr("Impossible d'obtenir la taille de la fenêtre");
-                deinitialiser_2d();
-                return new Size(-1, -1);
-            }
-            SDL.SDL_GetRendererOutputSize(rendu, out w, out h);
-            return new Size(w, h);
         }
 
         internal static void deinitialiser_2d()
@@ -116,7 +102,7 @@ namespace TNTMan
 
         internal static void nettoyerEcran(Color color)
         {
-            SDL.SDL_SetRenderDrawColor(rendu, color.R, color.G, color.B, color.A);
+            SDL.SDL_SetRenderDrawColor(rendu, (byte)color.R, (byte)color.G, (byte)color.B, (byte)color.A);
             SDL.SDL_RenderClear(rendu);
         }
 
@@ -172,6 +158,7 @@ namespace TNTMan
             deinitialiser_2d();
             return IntPtr.Zero;
         }
+<<<<<<< HEAD
 
         internal static void dessinerRectangle(int x, int y, int w, int h, int px, Color couleur)
         {
@@ -238,5 +225,7 @@ namespace TNTMan
             SDL.SDL_DestroyTexture(texMessage);
             texMessage = IntPtr.Zero;
         }
+=======
+>>>>>>> 38b087b (AJOUTS & MODIFICATIONS DE CLASSES)
     }
 }

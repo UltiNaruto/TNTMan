@@ -16,20 +16,19 @@ namespace TNTMan.ecrans
         {
             titre = _titre;
             ecranPrecedent = _ecranPrecedent;
-            arrierePlan = IntPtr.Zero;
         }
 
-        public virtual void dessinerEcran(IntPtr rendu)
-        {
-            if (arrierePlan == IntPtr.Zero) return;
-        }
-
-        public virtual void gererSouris()
+        public void dessinerEcran(IntPtr rendu)
         {
 
         }
 
-        public virtual void gererTouches(byte[] etats)
+        public void gererSouris()
+        {
+
+        }
+
+        public void gererTouches(byte[] etats)
         {
 
         }
