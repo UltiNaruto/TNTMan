@@ -30,6 +30,11 @@ namespace TNTMan.entitees
             position = _position;
         }
 
+        public bool getStatut()
+        {
+            return statut;
+        }
+
         public virtual void deplacer(float _ax, float _ay)
         {
             vitesse = new PointF(Math.Clamp(vitesse.X + _ax, -1.0f, 1.0f), Math.Clamp(vitesse.Y + _ay, -1.0f, 1.0f));
