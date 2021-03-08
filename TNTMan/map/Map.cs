@@ -62,14 +62,25 @@ namespace TNTMan.map
             listeEntites = new List<Entite>();
         }
 
-        public Bonus[] getToutLesBonus()
+        public void dessinerToutesLesEntites(IntPtr rendu)
         {
-            return listeEntites.FindAll((e) => e.GetType() == typeof(Bonus)).ToArray() as Bonus[];
+            listeEntites.ForEach((e) => {
+                if (!e.estMort())
+                {
+                    e.dessiner(rendu);
+                }
+            });
         }
 
-        public Bombe[] getToutLesBombes()
+        public void mettreAjourToutesLesEntites()
         {
-            return listeEntites.FindAll((e) => e.GetType() == typeof(Bombe)).ToArray() as Bombe[];
+            listeEntites.ForEach((e) => {
+                if (!e.estMort())
+                {
+                    e.mettreAJour(this);
+                }
+            });
+            listeEntites.RemoveAll((e) => e.estMort());
         }
 
         public Bloc getBlocA(int x, int y)

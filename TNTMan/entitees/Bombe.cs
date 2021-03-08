@@ -19,7 +19,7 @@ namespace TNTMan.entitees
         public Bombe(Joueur joueur)
         {
             proprietaire = joueur;
-            position = proprietaire.getPosition();
+            position = new PointF((int)proprietaire.getPosition().X + 0.5f, (int)proprietaire.getPosition().Y + 0.5f);
             tempsExplosion = 3000; // 3 secondes par défaut
             statut = true;
             portee = joueur.getPortee();
@@ -46,24 +46,28 @@ namespace TNTMan.entitees
             return tempsExplosion;
         }
 
-        public void dessine(IntPtr rendu)
+        public override void dessiner(IntPtr rendu)
         {
-            Size resolution = Gfx.getResolution();
-            Size tailleGrille = new Size(Map.LARGEUR_GRILLE * Bloc.TAILLE_BLOC, Map.LONGUEUR_GRILLE * Bloc.TAILLE_BLOC);
-            Gfx.remplirRectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(this.position.X * Bloc.TAILLE_BLOC) - 8, (resolution.Height - tailleGrille.Height) / 2 + (int)(this.position.Y * Bloc.TAILLE_BLOC) - 8, 16, 16, 1, Color.Orange, Color.DarkRed);
+            Point _position = Map.getPositionEcranDepuis(position.X, position.Y, 16, 16);
+            if (tempsExplosion > 15)
+            {
+                Gfx.remplirRectangle(_position.X, _position.Y, 16, 16, 1, Color.Orange, Color.DarkRed);
+            }
+            else
+            {
+                // Explosion enclenchée - On dessine quatre rectangles représentant l'explosion
+                /*Gfx.remplirRectangle((int)_position.X, (int)((float)portee * Bloc.TAILLE_BLOC - _position.Y), 8, portee * Bloc.TAILLE_BLOC, 1, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
+                Gfx.remplirRectangle((int)_position.X, (int)((float)portee * Bloc.TAILLE_BLOC + _position.Y), 8, portee * Bloc.TAILLE_BLOC, 1, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
+                Gfx.remplirRectangle((int)((float)portee * Bloc.TAILLE_BLOC - _position.X), (int)position.Y, portee * Bloc.TAILLE_BLOC, 8, 1, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
+                Gfx.remplirRectangle((int)((float)portee * Bloc.TAILLE_BLOC + _position.X), (int)position.Y, portee * Bloc.TAILLE_BLOC, 8, 1, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);*/
+            }
         }
 
         void explose()
         {
-            /* Explosion enclenchée - On dessine quatre rectangles représentant l'explosion
-            Gfx.remplirRectangle((int)position.X, (int)((float)portee - position.Y), 1, portee, portee, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
-            Gfx.remplirRectangle((int)position.X, (int)((float)portee + position.Y), 1, portee, portee, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
-            Gfx.remplirRectangle((int)((float)portee - position.X), (int)position.Y, 1, portee, portee, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
-            Gfx.remplirRectangle((int)((float)portee + position.X), (int)position.Y, 1, portee, portee, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
-            */
             // Disparition de la bombe
             tuer();
-            proprietaire.ajouterBombe();
+            proprietaire.incrementerBombe();
         }
 
         public override void mettreAJour(Map map)

@@ -26,7 +26,6 @@ namespace TNTMan.ecrans
         public override void dessinerEcran(IntPtr rendu)
         {
             base.dessinerEcran(rendu);
-            Bombe[] bombes = map.getToutLesBombes();
             Size resolution = Gfx.getResolution();
             Size tailleGrille = new Size(Map.LARGEUR_GRILLE * Bloc.TAILLE_BLOC, Map.LONGUEUR_GRILLE * Bloc.TAILLE_BLOC);
             Gfx.nettoyerEcran(Color.Green);
@@ -40,19 +39,10 @@ namespace TNTMan.ecrans
                     }
                 }
 
+            map.dessinerToutesLesEntites(rendu);
             joueur.dessiner(rendu);
             Gfx.dessinerTexte(5, 5, 18, Color.Black, "J1 - ({0:0.0}, {1:0.0})", joueur.getPosition().X, joueur.getPosition().Y);
             Gfx.dessinerTexte(5, 460, 18, Color.Black, "Bombes restantes : {0}", joueur.getNbBombes());
-            // Affichage des bombes posées à l'écran
-            if (bombes != null)
-            {
-                foreach (Bombe b in bombes)
-                {
-                    b.dessine(rendu);
-                }
-                // TEMPORAIRE - Affichage du temps restant avant explosion de la 1ère bombe posée
-                Gfx.dessinerTexte(5, 30, 18, Color.Black, "Temps avant explosion de la plus ancienne bombe : {0} ms ", bombes[0].getTempsExplosion());
-            }
         }
 
         public override void gererSouris()
@@ -61,8 +51,6 @@ namespace TNTMan.ecrans
 
         public override void gererTouches(byte[] etats)
         {
-            Bombe[] bombes = null;
-
             if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_W] > 0)
             {
                 joueur.deplacer(0.0f, -1.0f);
@@ -79,26 +67,12 @@ namespace TNTMan.ecrans
             {
                 joueur.deplacer(1.0f, 0.0f);
             }
-            joueur.mettreAJour(map);
             if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE] > 0)
             {
                 map.ajoutEntite(joueur.poserBombe());
             }
-            bombes = map.getToutLesBombes();
-            if (bombes != null)
-            {
-                foreach (Bombe b in bombes)
-                {
-                    if (!b.getStatut())
-                    {
-                        map.supprimerEntite(b);
-                    }
-                    else
-                    {
-                        b.mettreAJour(map);
-                    }
-                }
-            }
+            joueur.mettreAJour(map);
+            map.mettreAjourToutesLesEntites();
         }
     }
 }

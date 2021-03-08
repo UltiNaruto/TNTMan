@@ -82,9 +82,14 @@ namespace TNTMan.entitees
             return this.nb_bombes;
         }
 
-        public void ajouterBombe()
+        public void incrementerBombe()
         {
             nb_bombes++;
+        }
+
+        public void decrementerBombe()
+        {
+            nb_bombes--;
         }
 
         public Bombe poserBombe()
@@ -94,7 +99,7 @@ namespace TNTMan.entitees
 
             // vérifier si la bombe est déjà posé sur la case
 
-            nb_bombes--;
+            decrementerBombe();
             return new Bombe(this);
         }
 
