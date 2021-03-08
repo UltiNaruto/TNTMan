@@ -13,12 +13,10 @@ namespace TNTMan.ecrans
         //Session session = null;
         Map map = null;
         Joueur joueur = null;
-        List<Bombe> bombes;
 
         public Ecran_Jouer() : base("Jeu", null)
         {
-            joueur = new Joueur(4, 1.5f, 1.5f);
-            bombes = new List<Bombe>();
+            joueur = new Joueur(4, 1.25f, 1.25f);
             map = new Map();
             map.chargerMapParDefaut();
         }
@@ -28,6 +26,7 @@ namespace TNTMan.ecrans
         public override void dessinerEcran(IntPtr rendu)
         {
             base.dessinerEcran(rendu);
+            Bombe[] bombes = map.getToutLesBombes();
             Size resolution = Gfx.getResolution();
             Size tailleGrille = new Size(Map.LARGEUR_GRILLE * Bloc.TAILLE_BLOC, Map.LONGUEUR_GRILLE * Bloc.TAILLE_BLOC);
             Gfx.nettoyerEcran(Color.Green);
@@ -37,21 +36,19 @@ namespace TNTMan.ecrans
                     Bloc bloc = map.getBlocA(x, y);
                     if (bloc != null)
                     {
-                        if (bloc.GetType() == typeof(BlocIncassable))
-                            Gfx.remplirRectangle((resolution.Width - tailleGrille.Width) / 2 + x * Bloc.TAILLE_BLOC, (resolution.Height - tailleGrille.Height) / 2 + y * Bloc.TAILLE_BLOC, Bloc.TAILLE_BLOC, Bloc.TAILLE_BLOC, 1, Color.Gray, Color.Black);
-                        if (bloc.GetType() == typeof(BlocTerre))
-                            Gfx.remplirRectangle((resolution.Width - tailleGrille.Width) / 2 + x * Bloc.TAILLE_BLOC, (resolution.Height - tailleGrille.Height) / 2 + y * Bloc.TAILLE_BLOC, Bloc.TAILLE_BLOC, Bloc.TAILLE_BLOC, 1, Color.Brown, Color.Black);
+                        bloc.dessiner(rendu, x, y);
                     }
                 }
 
-            Gfx.remplirRectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(joueur.getPosition().X * Bloc.TAILLE_BLOC) - 8, (resolution.Height - tailleGrille.Height) / 2 + (int)(joueur.getPosition().Y * Bloc.TAILLE_BLOC) - 8, 16, 16, 1, joueur.getCouleur(), joueur.getCouleur());
+            joueur.dessiner(rendu);
             Gfx.dessinerTexte(5, 5, 18, Color.Black, "J1 - ({0:0.0}, {1:0.0})", joueur.getPosition().X, joueur.getPosition().Y);
+            Gfx.dessinerTexte(5, 460, 18, Color.Black, "Bombes restantes : {0}", joueur.getNbBombes());
             // Affichage des bombes posées à l'écran
-            if(bombes.Count > 0)
+            if (bombes != null)
             {
-                foreach (Bombe b in bombes.ToArray())
+                foreach (Bombe b in bombes)
                 {
-                    Gfx.remplirRectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(b.getPosition().X * Bloc.TAILLE_BLOC) - 8, (resolution.Height - tailleGrille.Height) / 2 + (int)(b.getPosition().Y * Bloc.TAILLE_BLOC) - 8, 16, 16, 1, Color.Orange, Color.DarkRed);
+                    b.dessine(rendu);
                 }
                 // TEMPORAIRE - Affichage du temps restant avant explosion de la 1ère bombe posée
                 Gfx.dessinerTexte(5, 30, 18, Color.Black, "Temps avant explosion de la plus ancienne bombe : {0} ms ", bombes[0].getTempsExplosion());
@@ -64,7 +61,9 @@ namespace TNTMan.ecrans
 
         public override void gererTouches(byte[] etats)
         {
-            if(etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_W] > 0)
+            Bombe[] bombes = null;
+
+            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_W] > 0)
             {
                 joueur.deplacer(0.0f, -1.0f);
             }
@@ -83,17 +82,20 @@ namespace TNTMan.ecrans
             joueur.mettreAJour(map);
             if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE] > 0)
             {
-                Bombe bombe = new Bombe(joueur);
-                bombes.Add(bombe);
+                map.ajoutEntite(joueur.poserBombe());
             }
-            if (bombes.Count > 0)
+            bombes = map.getToutLesBombes();
+            if (bombes != null)
             {
-                foreach (Bombe b in bombes.ToArray())
+                foreach (Bombe b in bombes)
                 {
-                    b.mettreAJour(map);
                     if (!b.getStatut())
                     {
-                        bombes.Remove(b);
+                        map.supprimerEntite(b);
+                    }
+                    else
+                    {
+                        b.mettreAJour(map);
                     }
                 }
             }

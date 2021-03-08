@@ -40,6 +40,11 @@ namespace TNTMan.entitees
             vitesse = new PointF(Math.Clamp(vitesse.X + _ax, -1.0f, 1.0f), Math.Clamp(vitesse.Y + _ay, -1.0f, 1.0f));
         }
 
+        public virtual void dessiner(IntPtr rendu)
+        {
+            
+        }
+
         public virtual void mettreAJour(Map map)
         {
         }

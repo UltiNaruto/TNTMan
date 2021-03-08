@@ -1,4 +1,6 @@
-﻿namespace TNTMan.map.blocs
+﻿using System;
+
+namespace TNTMan.map.blocs
 {
     internal class Bloc
     {
@@ -31,6 +33,11 @@
         public bool estSolide()
         {
             return solide;
+        }
+
+        public virtual void dessiner(IntPtr rendu, int bloc_x, int bloc_y)
+        {
+
         }
     }
 }

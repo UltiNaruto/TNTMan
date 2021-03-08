@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using TNTMan.map;
-using TNTMan.map.blocs;
 
 namespace TNTMan.entitees
 {
@@ -10,11 +9,14 @@ namespace TNTMan.entitees
         int id;
         Color couleur;
         float vitesse_deplacement;
+        int nb_bombes;
+        int portee_bombe;
         public Joueur(int _id, float _x, float _y)
         {
             id = _id;
             position = new PointF(_x, _y);
             vitesse_deplacement = 0.05f;
+            nb_bombes = 1;
             if (id == 1)
                 couleur = Color.Blue;
             if (id == 2)
@@ -45,6 +47,12 @@ namespace TNTMan.entitees
             base.deplacer(_ax * vitesse_deplacement, _ay * vitesse_deplacement);
         }
 
+        public override void dessiner(IntPtr rendu)
+        {
+            Point _position = Map.getPositionEcranDepuis(position.X, position.Y, 24, 24);
+            Gfx.remplirRectangle(_position.X, _position.Y, 24, 24, 1, this.getCouleur(), this.getCouleur());
+        }
+
         public override void mettreAJour(Map map)
         {
             float vitesse_deplacement_restante_abs_x = Math.Min(Math.Abs(vitesse.X - vitesse_deplacement), vitesse_deplacement);
@@ -67,6 +75,42 @@ namespace TNTMan.entitees
                     vitesse.Y = (float)Math.Round(vitesse.Y, 2) - vy;
                 }
             }
+        }
+
+        public int getNbBombes()
+        {
+            return this.nb_bombes;
+        }
+
+        public void ajouterBombe()
+        {
+            nb_bombes++;
+        }
+
+        public Bombe poserBombe()
+        {
+            if (nb_bombes == 0)
+                return null;
+
+            // vérifier si la bombe est déjà posé sur la case
+
+            nb_bombes--;
+            return new Bombe(this);
+        }
+
+        public int getPortee()
+        {
+            return this.portee_bombe;
+        }
+
+        public float getVitesse()
+        {
+            return this.vitesse_deplacement;
+        }
+
+        public void setVitesse(float vitesse)
+        {
+            this.vitesse_deplacement = vitesse;
         }
     }
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using TNTMan.entitees;
 using TNTMan.map.blocs;
 
@@ -57,6 +59,7 @@ namespace TNTMan.map
                 listeBlocs[x, y] = new BlocTerre();
                 i++;
             }
+            listeEntites = new List<Entite>();
         }
 
         public Bonus[] getToutLesBonus()
@@ -66,12 +69,35 @@ namespace TNTMan.map
 
         public Bombe[] getToutLesBombes()
         {
-            return listeEntites.FindAll((e) => e.GetType() == typeof(Bonus)).ToArray() as Bombe[];
+            return listeEntites.FindAll((e) => e.GetType() == typeof(Bombe)).ToArray() as Bombe[];
         }
 
         public Bloc getBlocA(int x, int y)
         {
             return listeBlocs[x, y];
+        }
+
+        public static Point getPositionEcranDepuis(float x, float y, int w=32, int h=32)
+        {
+            Size resolution = Gfx.getResolution();
+            Size tailleGrille = new Size(Map.LARGEUR_GRILLE * Bloc.TAILLE_BLOC, Map.LONGUEUR_GRILLE * Bloc.TAILLE_BLOC);
+            float dw = (Bloc.TAILLE_BLOC - w) / 2;
+            float dh = (Bloc.TAILLE_BLOC - h) / 2;
+            return new Point((int)((resolution.Width - tailleGrille.Width) / 2 + x * Bloc.TAILLE_BLOC - dw), (int)((resolution.Height - tailleGrille.Height) / 2 + y * Bloc.TAILLE_BLOC - dh));
+        }
+
+        internal void ajoutEntite(Entite entite)
+        {
+            if (entite == null)
+                return;
+            listeEntites.Add(entite);
+        }
+
+        internal void supprimerEntite(Entite entite)
+        {
+            if (entite == null)
+                return;
+            listeEntites.Remove(entite);
         }
     }
 }
