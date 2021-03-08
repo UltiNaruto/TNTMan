@@ -1,5 +1,6 @@
 using SDL2;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using TNTMan.entitees;
 using TNTMan.map;
@@ -12,10 +13,12 @@ namespace TNTMan.ecrans
         //Session session = null;
         Map map = null;
         Joueur joueur = null;
+        List<Bombe> bombes;
 
         public Ecran_Jouer() : base("Jeu", null)
         {
             joueur = new Joueur(4, 1.5f, 1.5f);
+            bombes = new List<Bombe>();
             map = new Map();
             map.chargerMapParDefaut();
         }
@@ -43,6 +46,16 @@ namespace TNTMan.ecrans
 
             Gfx.remplirRectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(joueur.getPosition().X * Bloc.TAILLE_BLOC) - 8, (resolution.Height - tailleGrille.Height) / 2 + (int)(joueur.getPosition().Y * Bloc.TAILLE_BLOC) - 8, 16, 16, 1, joueur.getCouleur(), joueur.getCouleur());
             Gfx.dessinerTexte(5, 5, 18, Color.Black, "J1 - ({0:0.0}, {1:0.0})", joueur.getPosition().X, joueur.getPosition().Y);
+            // Affichage des bombes posées à l'écran
+            if(bombes.Count > 0)
+            {
+                foreach (Bombe b in bombes.ToArray())
+                {
+                    Gfx.remplirRectangle((resolution.Width - tailleGrille.Width) / 2 + (int)(b.getPosition().X * Bloc.TAILLE_BLOC) - 8, (resolution.Height - tailleGrille.Height) / 2 + (int)(b.getPosition().Y * Bloc.TAILLE_BLOC) - 8, 16, 16, 1, Color.Orange, Color.DarkRed);
+                }
+                // TEMPORAIRE - Affichage du temps restant avant explosion de la 1ère bombe posée
+                Gfx.dessinerTexte(5, 30, 18, Color.Black, "Temps avant explosion de la plus ancienne bombe : {0} ms ", bombes[0].getTempsExplosion());
+            }
         }
 
         public override void gererSouris()
@@ -68,6 +81,22 @@ namespace TNTMan.ecrans
                 joueur.deplacer(1.0f, 0.0f);
             }
             joueur.mettreAJour(map);
+            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE] > 0)
+            {
+                Bombe bombe = new Bombe(joueur);
+                bombes.Add(bombe);
+            }
+            if (bombes.Count > 0)
+            {
+                foreach (Bombe b in bombes.ToArray())
+                {
+                    b.mettreAJour(map);
+                    if (!b.getStatut())
+                    {
+                        bombes.Remove(b);
+                    }
+                }
+            }
         }
     }
 }
