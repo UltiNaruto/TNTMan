@@ -37,9 +37,21 @@ namespace TNTMan.entitees
             return couleur;
         }
 
-        public bool enCollisionAvecBloc(Map map, PointF pos)
+        // Usage des tailles sur la grille et non en pixels
+        public bool enCollisionAvecBloc(Map map, PointF vitesse_appliquee)
         {
-            return map.getBlocA((int)pos.X, (int)pos.Y) != null;
+            RectangleF rect_joueur = new RectangleF(position.X - 0.125f + vitesse_appliquee.X, position.Y - 0.125f + vitesse_appliquee.Y, 0.85f, 0.85f);
+            RectangleF rect_bloc = RectangleF.Empty;
+            for (int x = 0; x < Map.LARGEUR_GRILLE; x++)
+                for (int y = 0; y < Map.LONGUEUR_GRILLE; y++)
+                {
+                    if (map.getBlocA(x, y) == null)
+                        continue;
+                    rect_bloc = new RectangleF(x, y, 1.0f, 1.0f);
+                    if (rect_joueur.IntersectsWith(rect_bloc))
+                        return true;
+                }
+            return false;
         }
 
         public override void deplacer(float _ax, float _ay)
@@ -62,7 +74,7 @@ namespace TNTMan.entitees
             if (vx != 0 || vy != 0)
             {
                 // vérifier la collision avec les blocs
-                if (enCollisionAvecBloc(map, Utils.ArrondiPositionBloc(position.X + vx, position.Y + vy)))
+                if (enCollisionAvecBloc(map, new PointF(vx, vy)))
                 {
                     vitesse.X = 0;
                     vitesse.Y = 0;
