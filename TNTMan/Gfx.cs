@@ -51,7 +51,7 @@ namespace TNTMan
             for (int i = 1; i < 73; i++)
             {
                 police[i] = SDL_ttf.TTF_OpenFont("res/font.ttf", i);
-                if(police[i] == IntPtr.Zero)
+                if (police[i] == IntPtr.Zero)
                 {
                     Program.MessageErr("TTF_OpenFont: TAILLE ({0}), ERREUR ({1})", i, SDL.SDL_GetError());
                     SDL_ttf.TTF_Quit();
@@ -71,7 +71,7 @@ namespace TNTMan
                 return 4;
             }
 
-            changerEcran(new Ecran_Jouer());
+            changerEcran(new Ecran_Titre());
 
             return 0;
         }
@@ -79,7 +79,7 @@ namespace TNTMan
         internal static Size getResolution()
         {
             int w, h;
-            if(rendu == IntPtr.Zero)
+            if (rendu == IntPtr.Zero)
             {
                 Program.MessageErr("Impossible d'obtenir la taille de la fenêtre");
                 deinitialiser_2d();
@@ -92,9 +92,9 @@ namespace TNTMan
         internal static void deinitialiser_2d()
         {
             SDL_image.IMG_Quit();
-            for(int i = 0;i<73;i++)
+            for (int i = 0; i < 73; i++)
             {
-                if(police[i] != IntPtr.Zero)
+                if (police[i] != IntPtr.Zero)
                 {
                     SDL_ttf.TTF_CloseFont(police[i]);
                     police[i] = IntPtr.Zero;
@@ -137,9 +137,9 @@ namespace TNTMan
         internal static void fin2D()
         {
             SDL.SDL_Event _event;
-            while(SDL.SDL_PollEvent(out _event) != 0)
+            while (SDL.SDL_PollEvent(out _event) != 0)
             {
-                if(_event.type == SDL.SDL_EventType.SDL_QUIT)
+                if (_event.type == SDL.SDL_EventType.SDL_QUIT)
                 {
                     deinitialiser_2d();
                     return;
@@ -219,7 +219,7 @@ namespace TNTMan
             if (rendu == IntPtr.Zero || police[px] == IntPtr.Zero) return;
 
             tailleBoiteMessage = getTailleRectangleTexte(message, px);
-            surfaceMessage = SDL_ttf.TTF_RenderText_Solid(police[px], message, new SDL.SDL_Color() { a = couleur.A, r = couleur.R, g = couleur.G, b = couleur.B});
+            surfaceMessage = SDL_ttf.TTF_RenderText_Solid(police[px], message, new SDL.SDL_Color() { a = couleur.A, r = couleur.R, g = couleur.G, b = couleur.B });
 
             if (surfaceMessage == IntPtr.Zero) return;
 

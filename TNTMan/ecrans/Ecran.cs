@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using SDL2;
 
 namespace TNTMan.ecrans
 {
     class Ecran
     {
-        String titre;
-        List<Bouton> boutons;
+        public String titre;
+        public List<Bouton> boutons;
         IntPtr arrierePlan;
         Ecran ecranPrecedent;
 
@@ -17,6 +18,7 @@ namespace TNTMan.ecrans
             titre = _titre;
             ecranPrecedent = _ecranPrecedent;
             arrierePlan = IntPtr.Zero;
+            boutons = new List<Bouton>();
         }
 
         public virtual void dessinerEcran(IntPtr rendu)
@@ -32,6 +34,22 @@ namespace TNTMan.ecrans
         public virtual void gererTouches(byte[] etats)
         {
 
+        }
+
+        public virtual void dessinerBoutons(IntPtr rendu)
+        {
+            foreach (Bouton b in boutons)
+            {
+                b.dessiner(rendu);
+            }
+        }
+
+        public virtual void mettreAJourBoutons(Point curseur)
+        {
+            foreach (Bouton b in boutons)
+            {
+                b.gererEvenements();
+            }
         }
     }
 }
