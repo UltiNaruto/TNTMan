@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using TNTMan.map;
-using TNTMan.map.blocs;
 
 namespace TNTMan.entitees
 {
@@ -49,7 +48,7 @@ namespace TNTMan.entitees
         public override void dessiner(IntPtr rendu)
         {
             Point _position = Map.getPositionEcranDepuis(position.X, position.Y, 16, 16);
-            if (tempsExplosion > 15)
+            if (tempsExplosion > 0)
             {
                 Gfx.remplirRectangle(_position.X, _position.Y, 16, 16, 1, Color.Orange, Color.DarkRed);
             }
@@ -72,10 +71,13 @@ namespace TNTMan.entitees
 
         public override void mettreAJour(Map map)
         {
-            if(tempsExplosion > 0)
+            if (tempsExplosion > 0)
                 tempsExplosion -= 16; // décrémente de 16 ms par image
             else
+            {
                 explose();
+                // création de l'entité flamme qui brulera les entités sauf bombe
+            }
         }
     }
 }

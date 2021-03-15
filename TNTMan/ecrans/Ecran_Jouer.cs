@@ -45,10 +45,6 @@ namespace TNTMan.ecrans
             Gfx.dessinerTexte(5, 460, 18, Color.Black, "Bombes restantes : {0}", joueur.getNbBombes());
         }
 
-        public override void gererSouris()
-        {
-        }
-
         public override void gererTouches(byte[] etats)
         {
             if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_W] > 0)

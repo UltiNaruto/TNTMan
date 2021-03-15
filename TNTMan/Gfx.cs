@@ -71,7 +71,7 @@ namespace TNTMan
                 return 4;
             }
 
-            changerEcran(new Ecran_Jouer());
+            changerEcran(new Ecran_Titre());
 
             return 0;
         }
