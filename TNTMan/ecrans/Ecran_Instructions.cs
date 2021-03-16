@@ -1,6 +1,8 @@
 ﻿using SDL2;
 using System;
 using System.Drawing;
+using SDL2;
+using System.Linq;
 
 namespace TNTMan.ecrans
 {
@@ -32,6 +34,13 @@ namespace TNTMan.ecrans
             {
                 Gfx.changerEcran(ecranPrecedent);
             }
+            
+            // Equivalent du clic gauche pour sélectionner un bouton dans le menu
+            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_RETURN] > 0)
+            {
+                gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
+            }
+
         }
 
         public override void gererActionBouton(Bouton bouton)
