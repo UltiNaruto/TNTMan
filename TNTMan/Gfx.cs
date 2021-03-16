@@ -11,7 +11,7 @@ namespace TNTMan
         static IntPtr rendu = IntPtr.Zero;
         static IntPtr[] police = null;
         static Ecran ecranActuel = null;
-        static long temps_derniere_pression_touche = long.MaxValue;
+        static DateTime temps_derniere_pression_touche = DateTime.Now;
 
         internal static int initialiser_2d()
         {
@@ -149,12 +149,12 @@ namespace TNTMan
 
         internal static void gererTouches()
         {
-            long temps_actuel = DateTime.Now.ToFileTime();
+            DateTime temps_actuel = DateTime.Now;
             int nb_etats = 0;
             byte[] etats = Utils.PtrToArray(SDL.SDL_GetKeyboardState(out nb_etats), nb_etats);
             if (ecranActuel == null || etats == null) return;
             ecranActuel.gererSouris();
-            if (ecranActuel.GetType() == typeof(Ecran_Jouer) || temps_actuel - temps_derniere_pression_touche >= 120)
+            if (ecranActuel.GetType() == typeof(Ecran_Jouer) || (temps_actuel - temps_derniere_pression_touche).TotalMilliseconds >= 150)
             {
                 ecranActuel.gererTouches(etats);
                 temps_derniere_pression_touche = temps_actuel;
