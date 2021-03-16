@@ -1,6 +1,4 @@
-using SDL2;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using TNTMan.entitees;
 using TNTMan.map;
@@ -16,9 +14,9 @@ namespace TNTMan.ecrans
 
         public Ecran_Jouer() : base("Jeu", null)
         {
-            joueur = new Joueur(1, 1.25f, 1.25f);
             map = new Map();
             map.chargerMapParDefaut();
+            joueur = new Joueur(1, 1.25f, 1.25f, map);
             map.ajoutEntite(joueur);
         }
 
@@ -47,7 +45,8 @@ namespace TNTMan.ecrans
                     e.dessiner(rendu);
                 }
             });
-            Gfx.dessinerTexte(5, 5, 18, Color.Black, "J1 - ({0:0.0}, {1:0.0})", joueur.getPosition().X, joueur.getPosition().Y);
+            Gfx.dessinerTexte(5, 5, 18, Color.Black, "J1 - ({0:0.00}, {1:0.00})", joueur.getPosition().X, joueur.getPosition().Y);
+            Gfx.dessinerTexte(5, 25, 18, Color.Black, "Vel - ({0:0.00}, {1:0.00})", joueur.vitesse.X, joueur.vitesse.Y);
             Gfx.dessinerTexte(5, 460, 18, Color.Black, "Bombes restantes : {0}", joueur.getNbBombes());
         }
 
@@ -62,9 +61,9 @@ namespace TNTMan.ecrans
                 else
                 {
                     if (e.GetType() != typeof(Joueur))
-                        e.mettreAJour(map);
+                        e.mettreAJour();
                     else
-                        ((Joueur)e).mettreAJour(map, etats);
+                        ((Joueur)e).mettreAJour(etats);
                 }
             });
         }

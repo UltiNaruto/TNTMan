@@ -12,7 +12,9 @@ namespace TNTMan.entitees
         float vitesse_deplacement;
         int nb_bombes;
         int portee_bombe;
-        public Joueur(int _id, float _x, float _y)
+        DateTime temps_avant_derniere_bombe_poser = DateTime.Now;
+
+        public Joueur(int _id, float _x, float _y, Map _map) : base(_map)
         {
             id = _id;
             statut = true;
@@ -41,27 +43,19 @@ namespace TNTMan.entitees
         }
 
         // Usage des tailles sur la grille et non en pixels
-        public bool enCollisionAvec(Map map, PointF vitesse_appliquee)
+        public override bool enCollisionAvec()
         {
             bool res = false;
-            RectangleF rect_joueur = new RectangleF((int)position.X - 0.125f, position.Y - 0.125f, 0.75f, 0.75f);
-            RectangleF rect_joueur_f = new RectangleF(position.X - 0.125f + vitesse_appliquee.X, position.Y - 0.125f + vitesse_appliquee.Y, 0.75f, 0.75f);
-            RectangleF rect_bloc = RectangleF.Empty;
-            for (int x = 0; x < Map.LARGEUR_GRILLE && !res; x++)
-                for (int y = 0; y < Map.LONGUEUR_GRILLE && !res; y++)
-                {
-                    if (map.getBlocA(x, y) == null)
-                        continue;
-                    rect_bloc = new RectangleF(x, y, 1.0f, 1.0f);
-                    if (rect_joueur_f.IntersectsWith(rect_bloc))
-                        res = true;
-                }
+            Point direction = new Point(vitesse.X == 0 ? 0 : (int)(vitesse.X / Math.Abs(vitesse.X)), vitesse.Y == 0 ? 0 : (int)(vitesse.Y / Math.Abs(vitesse.Y)));
+            RectangleF rect_joueur = new RectangleF((int)position.X + direction.X + 0.1f, (int)position.Y + direction.Y + 0.1f, 0.8f, 0.8f);
+            RectangleF rect_bloc = new RectangleF((int)position.X, (int)position.Y, 1.0f, 1.0f);
+            if (map.getBlocA((int)position.X + direction.X, (int)position.Y + direction.Y) != null)
+                return true;
             map.executerPourToutEntite((e) =>
             {
-                rect_bloc = new RectangleF((int)e.getPosition().X, (int)e.getPosition().Y, 1.0f, 1.0f);
                 if (e.GetType() == typeof(Bombe))
                 {
-                    if (!rect_joueur.IntersectsWith(rect_bloc) && rect_joueur_f.IntersectsWith(rect_bloc))
+                    if (rect_joueur.IntersectsWith(rect_bloc))
                     {
                         res = true;
                         return;
@@ -73,7 +67,19 @@ namespace TNTMan.entitees
 
         public override void deplacer(float _ax, float _ay)
         {
-            base.deplacer(_ax * vitesse_deplacement, _ay * vitesse_deplacement);
+            if (vitesse.X != 0 || vitesse.Y != 0)
+                return;
+            if(vitesse.Y == 0 && _ax != 0)
+                base.deplacer(_ax, _ay);
+            if (vitesse.X == 0 && _ay != 0)
+                base.deplacer(_ax, _ay);
+
+            // vérifier la collision avec les blocs
+            if (enCollisionAvec())
+            {
+                vitesse.X = 0;
+                vitesse.Y = 0;
+            }
         }
 
         public override void dessiner(IntPtr rendu)
@@ -82,10 +88,8 @@ namespace TNTMan.entitees
             Gfx.remplirRectangle(_position.X, _position.Y, 24, 24, 1, this.getCouleur(), this.getCouleur());
         }
 
-        public void mettreAJour(Map map, byte[] etats)
+        public void mettreAJour(byte[] etats)
         {
-            float vitesse_deplacement_restante_abs_x = 0.0f;
-            float vitesse_deplacement_restante_abs_y = 0.0f;
             float vx = 0.0f;
             float vy = 0.0f;
 
@@ -113,26 +117,21 @@ namespace TNTMan.entitees
                 map.ajoutEntite(poserBombe());
             }
 
-            vitesse_deplacement_restante_abs_x = Math.Min(Math.Abs(vitesse.X - vitesse_deplacement), vitesse_deplacement);
-            vitesse_deplacement_restante_abs_y = Math.Min(Math.Abs(vitesse.Y - vitesse_deplacement), vitesse_deplacement);
-            vx = Math.Clamp(vitesse.X, -1 * vitesse_deplacement_restante_abs_x, vitesse_deplacement_restante_abs_x);
-            vy = Math.Clamp(vitesse.Y, -1 * vitesse_deplacement_restante_abs_y, vitesse_deplacement_restante_abs_y);
+            vx = Math.Clamp(vitesse.X, -1.0f * vitesse_deplacement, vitesse_deplacement);
+            vy = Math.Clamp(vitesse.Y, -1.0f * vitesse_deplacement, vitesse_deplacement);
 
-            if (vx != 0 || vy != 0)
+            if (vx == 0 && vy == 0)
             {
-                // vérifier la collision avec les blocs
-                if (enCollisionAvec(map, new PointF(vx, vy)))
-                {
-                    vitesse.X = 0;
-                    vitesse.Y = 0;
-                }
-                else
-                {
-                    position.X = (float)Math.Round(position.X, 2) + vx;
-                    position.Y = (float)Math.Round(position.Y, 2) + vy;
-                    vitesse.X = (float)Math.Round(vitesse.X, 2) - vx;
-                    vitesse.Y = (float)Math.Round(vitesse.Y, 2) - vy;
-                }
+                position.X = (int)position.X + 0.25f;
+                position.Y = (int)position.Y + 0.25f;
+            }
+            else
+            {
+                position.X += vx;
+                vitesse.X -= vx;
+
+                position.Y += vy;
+                vitesse.Y -= vy;
             }
         }
 
@@ -153,13 +152,21 @@ namespace TNTMan.entitees
 
         public Bombe poserBombe()
         {
+            DateTime temps_actuel = DateTime.Now;
             if (nb_bombes == 0)
                 return null;
 
-            // vérifier si la bombe est déjà posé sur la case
+            if ((temps_actuel - temps_avant_derniere_bombe_poser).TotalMilliseconds >= 120)
+            {
+                // vérifier si la bombe est déjà posé sur la case
+                if (map.entiteExiste((int)position.X, (int)position.Y) == typeof(Bombe))
+                    return null;
 
-            decrementerBombe();
-            return new Bombe(this);
+                decrementerBombe();
+                temps_avant_derniere_bombe_poser = temps_actuel;
+                return new Bombe(this);
+            }
+            return null;
         }
 
         public int getPortee()

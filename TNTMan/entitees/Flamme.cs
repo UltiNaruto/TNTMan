@@ -7,14 +7,16 @@ namespace TNTMan.entitees
     class Flamme : Entite
     {
         Joueur proprietaire;
+        DateTime tempsExplosion;
         protected int tempsAvantExtinction;
 
-        public Flamme(int x, int y, Joueur _proprietaire)
+        public Flamme(int x, int y, Joueur _proprietaire, DateTime temps_actuel, Map _map) : base(_map)
         {
             statut = true;
             position = new PointF(x + 0.5f, y + 0.5f);
             proprietaire = _proprietaire;
-            tempsAvantExtinction = 200;
+            tempsExplosion = temps_actuel;
+            tempsAvantExtinction = 300;
         }
 
         public Joueur getProprietaire()
@@ -36,15 +38,13 @@ namespace TNTMan.entitees
             }
         }
 
-        public override void mettreAJour(Map map)
+        public override void mettreAJour()
         {
-            if (tempsAvantExtinction > 0)
+            DateTime temps_actuel = DateTime.Now;
+            if ((temps_actuel - tempsExplosion).TotalMilliseconds > tempsAvantExtinction)
             {
-                map.tuerEntiteA(position.X, position.Y);
-                tempsAvantExtinction -= 16; // décrémente de 16 ms par image
-            }
-            else
                 tuer();
+            }
         }
     }
 }

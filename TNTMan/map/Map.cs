@@ -42,7 +42,7 @@ namespace TNTMan.map
                     listeBlocs[x, y] = new BlocIncassable();
                 }
 
-            for(int i = 0;i<60;)
+            for(int i = 0;i<70;)
             {
                 x = Program.random.Next(1, LARGEUR_GRILLE - 1);
                 y = Program.random.Next(1, LONGUEUR_GRILLE - 1);
@@ -82,7 +82,14 @@ namespace TNTMan.map
 
         public Bloc getBlocA(int x, int y)
         {
-            return listeBlocs[x, y];
+            try
+            {
+                return listeBlocs[x, y];
+            }
+            catch(IndexOutOfRangeException ex)
+            {
+                return null;
+            }
         }
 
         // x => ?.5f
@@ -126,6 +133,16 @@ namespace TNTMan.map
             if (entite == null)
                 return;
             listeEntitesAAjouter.Add(entite);
+        }
+
+        internal Type entiteExiste(int x, int y)
+        {
+            return listeEntites.Find((e) => (int)e.getPosition().X == x && (int)e.getPosition().Y == y).GetType();
+        }
+
+        internal Entite trouverEntite(int x, int y)
+        {
+            return listeEntites.Find((e) => (int)e.getPosition().X == x && (int)e.getPosition().Y == y);
         }
 
         internal void supprimerEntite(Entite entite)
