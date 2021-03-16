@@ -34,34 +34,9 @@ namespace TNTMan.ecrans
             {
                 Gfx.changerEcran(ecranPrecedent);
             }
-            // Sélection du bouton précédent dans le menu
-            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_UP] > 0)
-            {
-                // si le bouton est le premier on retourne au dernier bouton
-                // sinon on cherche le dernier bouton avant le bouton sélectionné
-                if (boutonSel == boutons.First().getId())
-                {
-                    boutonSel = boutons.Last().getId();
-                }
-                else
-                {
-                    boutonSel = boutons.Last((b) => b.getId() < boutonSel).getId();
-                }
-            } // Sélection du bouton suivant dans le menu
-            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_DOWN] > 0)
-            {
-                // si le bouton est le dernier on retourne au premier bouton
-                // sinon on cherche le premier bouton après le bouton sélectionné
-                if (boutonSel == boutons.Last().getId())
-                {
-                    boutonSel = boutons.First().getId();
-                }
-                else
-                {
-                    boutonSel = boutons.Find((b) => b.getId() > boutonSel).getId();
-                }
-            } // Equivalent du clic gauche pour sélectionner un bouton dans le menu
-            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_RETURN] > 0)
+            
+            // Equivalent du clic gauche pour sélectionner un bouton dans le menu
+            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_RETURN] > 0)
             {
                 gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
             }
