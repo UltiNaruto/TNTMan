@@ -59,14 +59,8 @@ namespace TNTMan.ecrans
             }
         }
 
-        public virtual void gererTouches(byte[] etats)
-        {
+        public virtual void gererTouches(byte[] etats) { }
 
-        }
-
-        public virtual void gererActionBouton(Bouton bouton)
-        {
-
-        }
+        public virtual void gererActionBouton(Bouton bouton) { }
     }
 }

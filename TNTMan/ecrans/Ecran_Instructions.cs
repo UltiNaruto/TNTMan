@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SDL2;
+using System;
 using System.Drawing;
 
 namespace TNTMan.ecrans
 {
     class Ecran_Instructions : Ecran
     {
-        public Ecran_Instructions() : base("Instructions", null)
+        public Ecran_Instructions(Ecran precedent) : base("Instructions", precedent)
         {
             Size resolution = Gfx.getResolution();
             boutons.Add(new Bouton(0, 45, resolution.Height - 30, 18, "Retour"));
@@ -29,8 +28,10 @@ namespace TNTMan.ecrans
 
         public override void gererTouches(byte[] etats)
         {
-            base.gererTouches(etats);
-
+            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_ESCAPE] > 0)
+            {
+                Gfx.changerEcran(ecranPrecedent);
+            }
         }
 
         public override void gererActionBouton(Bouton bouton)
@@ -38,7 +39,7 @@ namespace TNTMan.ecrans
             // Retourner au menu principal
             if (bouton.getId() == 0)
             {
-                Gfx.changerEcran(new Ecran_Titre());
+                Gfx.changerEcran(ecranPrecedent);
             }
         }
     }

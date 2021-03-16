@@ -1,6 +1,7 @@
 ﻿using SDL2;
 using System;
 using System.Drawing;
+using System.Threading;
 using TNTMan.ecrans;
 
 namespace TNTMan
@@ -164,6 +165,8 @@ namespace TNTMan
         internal static void changerEcran(Ecran nouvelEcran)
         {
             ecranActuel = nouvelEcran;
+            temps_derniere_pression_touche = DateTime.Now;
+            Thread.Sleep(60);
         }
 
         internal static IntPtr chargerImage(String format, params Object[] args)
