@@ -72,6 +72,12 @@ namespace TNTMan.ecrans
                 Gfx.changerEcran(new Ecran_Jouer());
             }
 
+            // Consulter les instructions
+            if (bouton.getId() == 1)
+            {
+                Gfx.changerEcran(new Ecran_Instructions());
+            }
+
             // Quitter
             if (bouton.getId() == 100)
             {
