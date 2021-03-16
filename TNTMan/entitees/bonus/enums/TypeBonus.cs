@@ -1,4 +1,4 @@
-﻿namespace TNTMan.entitees.enums
+﻿namespace TNTMan.entitees.bonus.enums
 {
     enum TypeBonus
     {

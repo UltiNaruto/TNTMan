@@ -174,6 +174,11 @@ namespace TNTMan.entitees
             return this.portee_bombe;
         }
 
+        public void setPortee(int p)
+        {
+            this.portee_bombe = p;
+        }
+
         public float getVitesse()
         {
             return this.vitesse_deplacement;
