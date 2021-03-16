@@ -155,7 +155,7 @@ namespace TNTMan
             byte[] etats = Utils.PtrToArray(SDL.SDL_GetKeyboardState(out nb_etats), nb_etats);
             if (ecranActuel == null || etats == null) return;
             ecranActuel.gererSouris();
-            if (ecranActuel.GetType() == typeof(Ecran_Jouer) || (temps_actuel - temps_derniere_pression_touche).TotalMilliseconds >= 150)
+            if (ecranActuel.GetType() == typeof(Ecran_Jouer) || (temps_actuel - temps_derniere_pression_touche).TotalMilliseconds >= 120)
             {
                 ecranActuel.gererTouches(etats);
                 temps_derniere_pression_touche = temps_actuel;
@@ -171,9 +171,43 @@ namespace TNTMan
 
         internal static IntPtr chargerImage(String format, params Object[] args)
         {
-            Program.MessageErr("chargerImage() : Non implémenté");
-            deinitialiser_2d();
-            return IntPtr.Zero;
+            String chemin = String.Format(format, args);
+            if (rendu == IntPtr.Zero)
+            {
+                return IntPtr.Zero;
+            }
+            IntPtr sw_tex = SDL_image.IMG_Load(chemin);
+            IntPtr hw_tex = SDL.SDL_CreateTextureFromSurface(rendu, sw_tex);
+            SDL.SDL_FreeSurface(sw_tex);
+            return hw_tex;
+        }
+
+        internal static void dessinerImage(int x, int y, int w, int h, IntPtr image)
+        {
+            SDL.SDL_Rect rect = new SDL.SDL_Rect();
+            rect.x = x;
+            rect.y = y;
+            rect.w = w;
+            rect.h = h;
+            if (rendu == IntPtr.Zero) return;
+            if (image == IntPtr.Zero) return;
+            SDL.SDL_RenderCopy(rendu, image, IntPtr.Zero, ref rect);
+        }
+
+        internal static void dessinerImageCentreH(int y, int w, int h, IntPtr image)
+        {
+            Size resolution = getResolution();
+            if (rendu == IntPtr.Zero) return;
+            if (image == IntPtr.Zero) return;
+            dessinerImage(resolution.Width / 2 - w / 2, y, w, h, image);
+        }
+
+        internal static void dessinerImageCentreV(int x, int w, int h, IntPtr image)
+        {
+            Size resolution = getResolution();
+            if (rendu == IntPtr.Zero) return;
+            if (image == IntPtr.Zero) return;
+            dessinerImage(x, resolution.Height / 2 - h / 2, w, h, image);
         }
 
         internal static void dessinerRectangle(int x, int y, int w, int h, int px, Color couleur)

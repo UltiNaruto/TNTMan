@@ -39,5 +39,11 @@ namespace TNTMan.map.blocs
         {
 
         }
+
+        public void subiDegats()
+        {
+            if (durabilite > 1)
+                durabilite--;
+        }
     }
 }

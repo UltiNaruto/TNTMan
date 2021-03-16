@@ -14,6 +14,8 @@ namespace TNTMan.map
         int id;
         Bloc[,] listeBlocs;
         List<Entite> listeEntites;
+        List<Entite> listeEntitesAAjouter;
+        List<Entite> listeEntitesASupprimer;
 
         public int getId()
         {
@@ -60,32 +62,54 @@ namespace TNTMan.map
                 i++;
             }
             listeEntites = new List<Entite>();
+            listeEntitesAAjouter = new List<Entite>();
+            listeEntitesASupprimer = new List<Entite>();
         }
 
-        public void dessinerToutesLesEntites(IntPtr rendu)
+        public void executerPourToutEntite(Action<Entite> action)
         {
-            listeEntites.ForEach((e) => {
-                if (!e.estMort())
-                {
-                    e.dessiner(rendu);
-                }
-            });
-        }
-
-        public void mettreAjourToutesLesEntites()
-        {
-            listeEntites.ForEach((e) => {
-                if (!e.estMort())
-                {
-                    e.mettreAJour(this);
-                }
-            });
-            listeEntites.RemoveAll((e) => e.estMort());
+            listeEntites.AddRange(listeEntitesAAjouter);
+            listeEntitesAAjouter.Clear();
+            listeEntitesASupprimer.ForEach((e) => listeEntites.Remove(e));
+            listeEntitesASupprimer.Clear();
+            try
+            {
+                foreach (Entite e in listeEntites)
+                    action(e);
+            }
+            catch { }
         }
 
         public Bloc getBlocA(int x, int y)
         {
             return listeBlocs[x, y];
+        }
+
+        // x => ?.5f
+        // y => ?.5f
+        public void tuerEntiteA(float x, float y)
+        {
+            executerPourToutEntite((e) => {
+                var position = e.getPosition();
+                if (e.GetType() == typeof(Bombe)
+                 || e.GetType() == typeof(Flamme))
+                    return;
+                if (!e.estMort())
+                {
+                    if (position.X >= x - 0.5f
+                     && position.X <= x + 0.5f
+                     && position.Y >= x - 0.5f
+                     && position.Y<= x + 0.5f)
+                    {
+                        e.tuer();
+                    }
+                }
+            });
+        }
+
+        internal void detruireBlocA(int x, int y)
+        {
+            listeBlocs[x, y] = null;
         }
 
         public static Point getPositionEcranDepuis(float x, float y, int w=32, int h=32)
@@ -101,14 +125,14 @@ namespace TNTMan.map
         {
             if (entite == null)
                 return;
-            listeEntites.Add(entite);
+            listeEntitesAAjouter.Add(entite);
         }
 
         internal void supprimerEntite(Entite entite)
         {
             if (entite == null)
                 return;
-            listeEntites.Remove(entite);
+            listeEntitesASupprimer.Add(entite);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SDL2;
+using System;
 using System.Drawing;
 using TNTMan.map;
 
@@ -14,8 +15,10 @@ namespace TNTMan.entitees
         public Joueur(int _id, float _x, float _y)
         {
             id = _id;
+            statut = true;
             position = new PointF(_x, _y);
             vitesse_deplacement = 0.05f;
+            portee_bombe = 1;
             nb_bombes = 1;
             if (id == 1)
                 couleur = Color.Blue;
@@ -38,20 +41,34 @@ namespace TNTMan.entitees
         }
 
         // Usage des tailles sur la grille et non en pixels
-        public bool enCollisionAvecBloc(Map map, PointF vitesse_appliquee)
+        public bool enCollisionAvec(Map map, PointF vitesse_appliquee)
         {
-            RectangleF rect_joueur = new RectangleF(position.X - 0.125f + vitesse_appliquee.X, position.Y - 0.125f + vitesse_appliquee.Y, 0.85f, 0.85f);
+            bool res = false;
+            RectangleF rect_joueur = new RectangleF((int)position.X - 0.125f, position.Y - 0.125f, 0.75f, 0.75f);
+            RectangleF rect_joueur_f = new RectangleF(position.X - 0.125f + vitesse_appliquee.X, position.Y - 0.125f + vitesse_appliquee.Y, 0.75f, 0.75f);
             RectangleF rect_bloc = RectangleF.Empty;
-            for (int x = 0; x < Map.LARGEUR_GRILLE; x++)
-                for (int y = 0; y < Map.LONGUEUR_GRILLE; y++)
+            for (int x = 0; x < Map.LARGEUR_GRILLE && !res; x++)
+                for (int y = 0; y < Map.LONGUEUR_GRILLE && !res; y++)
                 {
                     if (map.getBlocA(x, y) == null)
                         continue;
                     rect_bloc = new RectangleF(x, y, 1.0f, 1.0f);
-                    if (rect_joueur.IntersectsWith(rect_bloc))
-                        return true;
+                    if (rect_joueur_f.IntersectsWith(rect_bloc))
+                        res = true;
                 }
-            return false;
+            map.executerPourToutEntite((e) =>
+            {
+                rect_bloc = new RectangleF((int)e.getPosition().X, (int)e.getPosition().Y, 1.0f, 1.0f);
+                if (e.GetType() == typeof(Bombe))
+                {
+                    if (!rect_joueur.IntersectsWith(rect_bloc) && rect_joueur_f.IntersectsWith(rect_bloc))
+                    {
+                        res = true;
+                        return;
+                    }
+                }
+            });
+            return res;
         }
 
         public override void deplacer(float _ax, float _ay)
@@ -65,16 +82,46 @@ namespace TNTMan.entitees
             Gfx.remplirRectangle(_position.X, _position.Y, 24, 24, 1, this.getCouleur(), this.getCouleur());
         }
 
-        public override void mettreAJour(Map map)
+        public void mettreAJour(Map map, byte[] etats)
         {
-            float vitesse_deplacement_restante_abs_x = Math.Min(Math.Abs(vitesse.X - vitesse_deplacement), vitesse_deplacement);
-            float vitesse_deplacement_restante_abs_y = Math.Min(Math.Abs(vitesse.Y - vitesse_deplacement), vitesse_deplacement);
-            float vx = Math.Clamp(vitesse.X, -1 * vitesse_deplacement_restante_abs_x, vitesse_deplacement_restante_abs_x);
-            float vy = Math.Clamp(vitesse.Y, -1 * vitesse_deplacement_restante_abs_y, vitesse_deplacement_restante_abs_y);
+            float vitesse_deplacement_restante_abs_x = 0.0f;
+            float vitesse_deplacement_restante_abs_y = 0.0f;
+            float vx = 0.0f;
+            float vy = 0.0f;
+
+            if (estMort())
+                return;
+
+            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_W] > 0)
+            {
+                deplacer(0.0f, -1.0f);
+            }
+            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_S] > 0)
+            {
+                deplacer(0.0f, 1.0f);
+            }
+            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_A] > 0)
+            {
+                deplacer(-1.0f, 0.0f);
+            }
+            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_D] > 0)
+            {
+                deplacer(1.0f, 0.0f);
+            }
+            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE] > 0)
+            {
+                map.ajoutEntite(poserBombe());
+            }
+
+            vitesse_deplacement_restante_abs_x = Math.Min(Math.Abs(vitesse.X - vitesse_deplacement), vitesse_deplacement);
+            vitesse_deplacement_restante_abs_y = Math.Min(Math.Abs(vitesse.Y - vitesse_deplacement), vitesse_deplacement);
+            vx = Math.Clamp(vitesse.X, -1 * vitesse_deplacement_restante_abs_x, vitesse_deplacement_restante_abs_x);
+            vy = Math.Clamp(vitesse.Y, -1 * vitesse_deplacement_restante_abs_y, vitesse_deplacement_restante_abs_y);
+
             if (vx != 0 || vy != 0)
             {
                 // vérifier la collision avec les blocs
-                if (enCollisionAvecBloc(map, new PointF(vx, vy)))
+                if (enCollisionAvec(map, new PointF(vx, vy)))
                 {
                     vitesse.X = 0;
                     vitesse.Y = 0;

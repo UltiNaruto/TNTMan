@@ -16,9 +16,10 @@ namespace TNTMan.ecrans
 
         public Ecran_Jouer() : base("Jeu", null)
         {
-            joueur = new Joueur(4, 1.25f, 1.25f);
+            joueur = new Joueur(1, 1.25f, 1.25f);
             map = new Map();
             map.chargerMapParDefaut();
+            map.ajoutEntite(joueur);
         }
 
         // taille bloc 32x32
@@ -39,36 +40,33 @@ namespace TNTMan.ecrans
                     }
                 }
 
-            map.dessinerToutesLesEntites(rendu);
-            joueur.dessiner(rendu);
+            map.executerPourToutEntite((e) =>
+            {
+                if (!e.estMort())
+                {
+                    e.dessiner(rendu);
+                }
+            });
             Gfx.dessinerTexte(5, 5, 18, Color.Black, "J1 - ({0:0.0}, {1:0.0})", joueur.getPosition().X, joueur.getPosition().Y);
             Gfx.dessinerTexte(5, 460, 18, Color.Black, "Bombes restantes : {0}", joueur.getNbBombes());
         }
 
         public override void gererTouches(byte[] etats)
         {
-            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_W] > 0)
+            map.executerPourToutEntite((e) =>
             {
-                joueur.deplacer(0.0f, -1.0f);
-            }
-            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_S] > 0)
-            {
-                joueur.deplacer(0.0f, 1.0f);
-            }
-            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_A] > 0)
-            {
-                joueur.deplacer(-1.0f, 0.0f);
-            }
-            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_D] > 0)
-            {
-                joueur.deplacer(1.0f, 0.0f);
-            }
-            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE] > 0)
-            {
-                map.ajoutEntite(joueur.poserBombe());
-            }
-            joueur.mettreAJour(map);
-            map.mettreAjourToutesLesEntites();
+                if (e.estMort())
+                {
+                    map.supprimerEntite(e);
+                }
+                else
+                {
+                    if (e.GetType() != typeof(Joueur))
+                        e.mettreAJour(map);
+                    else
+                        ((Joueur)e).mettreAJour(map, etats);
+                }
+            });
         }
     }
 }

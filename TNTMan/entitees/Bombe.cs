@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using TNTMan.map;
+using TNTMan.map.blocs;
 
 namespace TNTMan.entitees
 {
@@ -35,7 +36,7 @@ namespace TNTMan.entitees
             return this.portee;
         }
 
-        Joueur getProprietaire()
+        public Joueur getProprietaire()
         {
             return this.proprietaire;
         }
@@ -52,14 +53,6 @@ namespace TNTMan.entitees
             {
                 Gfx.remplirRectangle(_position.X, _position.Y, 16, 16, 1, Color.Orange, Color.DarkRed);
             }
-            else
-            {
-                // Explosion enclenchée - On dessine quatre rectangles représentant l'explosion
-                /*Gfx.remplirRectangle((int)_position.X, (int)((float)portee * Bloc.TAILLE_BLOC - _position.Y), 8, portee * Bloc.TAILLE_BLOC, 1, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
-                Gfx.remplirRectangle((int)_position.X, (int)((float)portee * Bloc.TAILLE_BLOC + _position.Y), 8, portee * Bloc.TAILLE_BLOC, 1, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
-                Gfx.remplirRectangle((int)((float)portee * Bloc.TAILLE_BLOC - _position.X), (int)position.Y, portee * Bloc.TAILLE_BLOC, 8, 1, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);
-                Gfx.remplirRectangle((int)((float)portee * Bloc.TAILLE_BLOC + _position.X), (int)position.Y, portee * Bloc.TAILLE_BLOC, 8, 1, Color.LightGoldenrodYellow, Color.LightGoldenrodYellow);*/
-            }
         }
 
         void explose()
@@ -71,12 +64,120 @@ namespace TNTMan.entitees
 
         public override void mettreAJour(Map map)
         {
+            int _x = (int)position.X;
+            int _y = (int)position.Y;
+            Bloc bloc_en_collision = null;
             if (tempsExplosion > 0)
                 tempsExplosion -= 16; // décrémente de 16 ms par image
             else
             {
+                map.tuerEntiteA(position.X, position.Y);
                 explose();
-                // création de l'entité flamme qui brulera les entités sauf bombe
+
+                map.ajoutEntite(new Flamme(_x, _y, proprietaire));
+                for (int x = (int)position.X - portee; x < (int)position.X; x++)
+                {
+                    bloc_en_collision = map.getBlocA(x, _y);
+                    if (bloc_en_collision == null)
+                    {
+                        if (x != _x && x > 0 && x < Map.LARGEUR_GRILLE)
+                            map.ajoutEntite(new Flamme(x, _y, proprietaire));
+                    }
+                    else
+                    {
+                        if (bloc_en_collision.GetType() != typeof(BlocIncassable)
+                        && bloc_en_collision.estSolide())
+                        {
+                            if (bloc_en_collision.getDurabilite() > 1)
+                            {
+                                bloc_en_collision.subiDegats();
+                            }
+                            else
+                            {
+                                map.detruireBlocA(x, _y);
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                for (int x = (int)position.X + 1; x <= (int)position.X + portee; x++)
+                {
+                    bloc_en_collision = map.getBlocA(x, _y);
+                    if (bloc_en_collision == null)
+                    {
+                        if (x != _x && x > 0 && x < Map.LARGEUR_GRILLE)
+                            map.ajoutEntite(new Flamme(x, _y, proprietaire));
+                    }
+                    else
+                    {
+                        if (bloc_en_collision.GetType() != typeof(BlocIncassable)
+                        && bloc_en_collision.estSolide())
+                        {
+                            if (bloc_en_collision.getDurabilite() > 1)
+                            {
+                                bloc_en_collision.subiDegats();
+                            }
+                            else
+                            {
+                                map.detruireBlocA(x, _y);
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                for (int y = (int)position.Y - portee; y < (int)position.Y; y++)
+                {
+                    bloc_en_collision = map.getBlocA(_x, y);
+                    if (bloc_en_collision == null)
+                    {
+                        if (y != _y && y > 0 && y < Map.LONGUEUR_GRILLE)
+                            map.ajoutEntite(new Flamme(_x, y, proprietaire));
+                    }
+                    else
+                    {
+                        if (bloc_en_collision.GetType() != typeof(BlocIncassable)
+                        && bloc_en_collision.estSolide())
+                        {
+                            if (bloc_en_collision.getDurabilite() > 1)
+                            {
+                                bloc_en_collision.subiDegats();
+                            }
+                            else
+                            {
+                                map.detruireBlocA(_x, y);
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                for (int y = (int)position.Y + 1; y <= (int)position.Y + portee; y++)
+                {
+                    bloc_en_collision = map.getBlocA(_x, y);
+                    if (bloc_en_collision == null)
+                    {
+                        if (y != _y && y > 0 && y < Map.LONGUEUR_GRILLE)
+                            map.ajoutEntite(new Flamme(_x, y, proprietaire));
+                    }
+                    else
+                    {
+                        if (bloc_en_collision.GetType() != typeof(BlocIncassable)
+                        && bloc_en_collision.estSolide())
+                        {
+                            if (bloc_en_collision.getDurabilite() > 1)
+                            {
+                                bloc_en_collision.subiDegats();
+                            }
+                            else
+                            {
+                                map.detruireBlocA(_x, y);
+                            }
+                        }
+                        break;
+                    }
+                }
             }
         }
     }
