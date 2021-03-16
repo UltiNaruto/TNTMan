@@ -62,7 +62,6 @@ namespace TNTMan.ecrans
             {
                 gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
             }
-
         }
 
         public override void gererActionBouton(Bouton bouton)
