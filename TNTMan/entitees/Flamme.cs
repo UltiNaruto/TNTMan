@@ -6,6 +6,7 @@ namespace TNTMan.entitees
 {
     class Flamme : Entite
     {
+        public static readonly int TAILLE_FEU = 32;
         Joueur proprietaire;
         DateTime tempsExplosion;
         protected int tempsAvantExtinction;
@@ -34,7 +35,7 @@ namespace TNTMan.entitees
             Point _position = Map.getPositionEcranDepuis((int)position.X, (int)position.Y, 32, 32);
             if (tempsAvantExtinction > 0)
             {
-                Gfx.remplirRectangle(_position.X, _position.Y, 32, 32, 1, Color.Orange, Color.DarkRed);
+                Gfx.dessinerImage(_position.X, _position.Y, TAILLE_FEU, TAILLE_FEU, Gfx.images["feu"]);
             }
         }
 

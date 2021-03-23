@@ -16,6 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="images\gamescreen_bg.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Update="res\font.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

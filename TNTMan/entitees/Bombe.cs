@@ -8,7 +8,7 @@ namespace TNTMan.entitees
     class Bombe : Entite
     {
         // Attributs
-
+        public static readonly int TAILLE_BOMBE = 20;
         //int id;
         string nom;
         int portee;
@@ -53,7 +53,7 @@ namespace TNTMan.entitees
             Point _position = Map.getPositionEcranDepuis(position.X, position.Y, 16, 16);
             if (tempsExplosion > 0)
             {
-                Gfx.remplirRectangle(_position.X, _position.Y, 16, 16, 1, Color.Orange, Color.DarkRed);
+                Gfx.dessinerImage(_position.X, _position.Y, TAILLE_BOMBE, TAILLE_BOMBE, Gfx.images["bombe_noire"]);
             }
         }
 

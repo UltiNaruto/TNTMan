@@ -1,8 +1,7 @@
 ﻿using SDL2;
 using System;
 using System.Drawing;
-using SDL2;
-using System.Linq;
+using System.IO;
 
 namespace TNTMan.ecrans
 {
@@ -18,7 +17,7 @@ namespace TNTMan.ecrans
         {
             base.dessinerEcran(rendu);
             Size resolution = Gfx.getResolution();
-            Gfx.nettoyerEcran(Color.SkyBlue);
+            Gfx.dessinerImageCentreH(0, resolution.Width, resolution.Height, Gfx.images["fond_gazon"]);
             Gfx.dessinerTexte(resolution.Width / 2 - 100, 60, 50, Color.Red, titre);
             Gfx.dessinerTexte(45, 150, 20, Color.Red, "Se déplacer : Z (haut), S (bas), Q (gauche), D (droite)");
             Gfx.dessinerTexte(45, 200, 20, Color.Red, "Poser une bombe : ESPACE");

@@ -96,7 +96,7 @@ namespace TNTMan.entitees.bonus
             Gfx.remplirRectangle(_position.X, _position.Y, 16, 16, 1, couleur, couleurExt);
         }
 
-        public override void mettreAJour(Map map)
+        public override void mettreAJour()
         {
             int _x = (int)position.X;
             int _y = (int)position.Y;

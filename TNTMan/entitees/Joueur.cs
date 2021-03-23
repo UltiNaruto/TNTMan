@@ -2,24 +2,29 @@
 using System;
 using System.Drawing;
 using TNTMan.map;
+using TNTMan.entitees.enums;
 
 namespace TNTMan.entitees
 {
     class Joueur : Entite
     {
+        public static readonly int TAILLE_JOUEUR = 28;
+
         int id;
         Color couleur;
         float vitesse_deplacement;
+        DirectionJoueur direction;
         int nb_bombes;
         int portee_bombe;
         DateTime temps_avant_derniere_bombe_poser = DateTime.Now;
 
-        public Joueur(int _id, float _x, float _y, Map _map) : base(_map)
+        public Joueur(int _id, float _x, float _y, DirectionJoueur _direction, Map _map) : base(_map)
         {
             id = _id;
             statut = true;
             position = new PointF(_x, _y);
             vitesse_deplacement = 0.05f;
+            direction = _direction;
             portee_bombe = 1;
             nb_bombes = 1;
             if (id == 1)
@@ -85,7 +90,98 @@ namespace TNTMan.entitees
         public override void dessiner(IntPtr rendu)
         {
             Point _position = Map.getPositionEcranDepuis(position.X, position.Y, 24, 24);
-            Gfx.remplirRectangle(_position.X, _position.Y, 24, 24, 1, this.getCouleur(), this.getCouleur());
+            if(id == 1)
+            {
+                if(direction == enums.DirectionJoueur.Haut)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j1_haut"]);
+                }
+                else if(direction == enums.DirectionJoueur.Bas)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j1_bas"]);
+                }
+                else if (direction == enums.DirectionJoueur.Gauche)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j1_gauche"]);
+                }
+                else if (direction == enums.DirectionJoueur.Droite)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j1_droite"]);
+                }
+            }
+            if (id == 2)
+            {
+                if (direction == enums.DirectionJoueur.Haut)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j2_haut"]);
+                }
+                else if (direction == enums.DirectionJoueur.Bas)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j2_bas"]);
+                }
+                else if (direction == enums.DirectionJoueur.Gauche)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j2_gauche"]);
+                }
+                else if (direction == enums.DirectionJoueur.Droite)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j2_droite"]);
+                }
+            }
+            if (id == 3)
+            {
+                if (direction == enums.DirectionJoueur.Haut)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j3_haut"]);
+                }
+                else if (direction == enums.DirectionJoueur.Bas)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j3_bas"]);
+                }
+                else if (direction == enums.DirectionJoueur.Gauche)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j3_gauche"]);
+                }
+                else if (direction == enums.DirectionJoueur.Droite)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j3_droite"]);
+                }
+            }
+            if (id == 4)
+            {
+                if (direction == enums.DirectionJoueur.Haut)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j4_haut"]);
+                }
+                else if (direction == enums.DirectionJoueur.Bas)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j4_bas"]);
+                }
+                else if (direction == enums.DirectionJoueur.Gauche)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j4_gauche"]);
+                }
+                else if (direction == enums.DirectionJoueur.Droite)
+                {
+
+                    Gfx.dessinerImage(_position.X, _position.Y, TAILLE_JOUEUR, TAILLE_JOUEUR, Gfx.images["j4_droite"]);
+                }
+            }
         }
 
         public void mettreAJour(byte[] etats)
@@ -98,18 +194,22 @@ namespace TNTMan.entitees
 
             if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_W] > 0)
             {
+                direction = enums.DirectionJoueur.Haut;
                 deplacer(0.0f, -1.0f);
             }
             else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_S] > 0)
             {
+                direction = enums.DirectionJoueur.Bas;
                 deplacer(0.0f, 1.0f);
             }
             else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_A] > 0)
             {
+                direction = enums.DirectionJoueur.Gauche;
                 deplacer(-1.0f, 0.0f);
             }
             else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_D] > 0)
             {
+                direction = enums.DirectionJoueur.Droite;
                 deplacer(1.0f, 0.0f);
             }
             if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE] > 0)

@@ -1,6 +1,8 @@
 ﻿using SDL2;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using TNTMan.ecrans;
 
@@ -13,6 +15,7 @@ namespace TNTMan
         static IntPtr[] police = null;
         static Ecran ecranActuel = null;
         static DateTime temps_derniere_pression_touche = DateTime.Now;
+        static public Dictionary<String, IntPtr> images = new Dictionary<string, IntPtr>();
 
         internal static int initialiser_2d()
         {
@@ -71,6 +74,8 @@ namespace TNTMan
                 SDL.SDL_Quit();
                 return 4;
             }
+
+            chargerAllImages();
 
             changerEcran(new Ecran_Titre());
 
@@ -169,6 +174,14 @@ namespace TNTMan
             Thread.Sleep(60);
         }
 
+        internal static String chercherCheminImage(String nomImage)
+        {
+            // Récupération des chemins des fichiers
+            string cheminComplet = Directory.GetCurrentDirectory();
+            string cheminProjet = cheminComplet.Remove(cheminComplet.IndexOf(@"\bin\Debug"));
+            return cheminProjet + nomImage;
+        }
+
         internal static IntPtr chargerImage(String format, params Object[] args)
         {
             String chemin = String.Format(format, args);
@@ -208,6 +221,39 @@ namespace TNTMan
             if (rendu == IntPtr.Zero) return;
             if (image == IntPtr.Zero) return;
             dessinerImage(x, resolution.Height / 2 - h / 2, w, h, image);
+        }
+
+        internal static void chargerAllImages()
+        {
+            // Chargement du fond 
+            images.Add("fond_gazon", chargerImage(chercherCheminImage(@"\images\gamescreen_bg.jpg")));
+            // Chargement des blocs
+            images.Add("bloc_incassable", chargerImage(chercherCheminImage(@"\images\blocs\bloc_incassable.png")));
+            images.Add("bloc_terre", chargerImage(chercherCheminImage(@"\images\blocs\bloc_terre.png")));
+            // Chargement des bombes
+            images.Add("bombe_noire", chargerImage(chercherCheminImage(@"\images\bombes\bombe_noire.png")));
+            // Chargement de l'explosion
+            images.Add("feu", chargerImage(chercherCheminImage(@"\images\explosion.png")));
+            // Chargement du joueur 1
+            images.Add("j1_haut", chargerImage(chercherCheminImage(@"\images\joueurs\joueur1_haut.png")));
+            images.Add("j1_bas", chargerImage(chercherCheminImage(@"\images\joueurs\joueur1_bas.png")));
+            images.Add("j1_gauche", chargerImage(chercherCheminImage(@"\images\joueurs\joueur1_gauche.png")));
+            images.Add("j1_droite", chargerImage(chercherCheminImage(@"\images\joueurs\joueur1_droite.png")));
+            // Chargement du joueur 2
+            images.Add("j2_haut", chargerImage(chercherCheminImage(@"\images\joueurs\joueur2_haut.png")));
+            images.Add("j2_bas", chargerImage(chercherCheminImage(@"\images\joueurs\joueur2_bas.png")));
+            images.Add("j2_gauche", chargerImage(chercherCheminImage(@"\images\joueurs\joueur2_gauche.png")));
+            images.Add("j2_droite", chargerImage(chercherCheminImage(@"\images\joueurs\joueur2_droite.png")));
+            // Chargement du joueur 3
+            images.Add("j3_haut", chargerImage(chercherCheminImage(@"\images\joueurs\joueur3_haut.png")));
+            images.Add("j3_bas", chargerImage(chercherCheminImage(@"\images\joueurs\joueur3_bas.png")));
+            images.Add("j3_gauche", chargerImage(chercherCheminImage(@"\images\joueurs\joueur3_gauche.png")));
+            images.Add("j3_droite", chargerImage(chercherCheminImage(@"\images\joueurs\joueur3_droite.png")));
+            // Chargement du joueur 4
+            images.Add("j4_haut", chargerImage(chercherCheminImage(@"\images\joueurs\joueur4_haut.png")));
+            images.Add("j4_bas", chargerImage(chercherCheminImage(@"\images\joueurs\joueur4_bas.png")));
+            images.Add("j4_gauche", chargerImage(chercherCheminImage(@"\images\joueurs\joueur4_gauche.png")));
+            images.Add("j4_droite", chargerImage(chercherCheminImage(@"\images\joueurs\joueur4_droite.png")));
         }
 
         internal static void dessinerRectangle(int x, int y, int w, int h, int px, Color couleur)

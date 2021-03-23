@@ -1,6 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using TNTMan.entitees;
+using TNTMan.entitees.enums;
 using TNTMan.map;
 using TNTMan.map.blocs;
 
@@ -16,7 +19,7 @@ namespace TNTMan.ecrans
         {
             map = new Map();
             map.chargerMapParDefaut();
-            joueur = new Joueur(1, 1.25f, 1.25f, map);
+            joueur = new Joueur(1, 1.25f, 1.25f, entitees.enums.DirectionJoueur.Bas, map);
             map.ajoutEntite(joueur);
         }
 
@@ -27,7 +30,8 @@ namespace TNTMan.ecrans
             base.dessinerEcran(rendu);
             Size resolution = Gfx.getResolution();
             Size tailleGrille = new Size(Map.LARGEUR_GRILLE * Bloc.TAILLE_BLOC, Map.LONGUEUR_GRILLE * Bloc.TAILLE_BLOC);
-            Gfx.nettoyerEcran(Color.Green);
+            Gfx.dessinerImageCentreH(0, resolution.Width, resolution.Height, Gfx.images["fond_gazon"]);
+            // Affichage des blocs 
             for (int x = 0; x < Map.LARGEUR_GRILLE; x++)
                 for (int y = 0; y < Map.LONGUEUR_GRILLE; y++)
                 {
