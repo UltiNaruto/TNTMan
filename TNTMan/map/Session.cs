@@ -20,24 +20,27 @@ namespace TNTMan.map
 
         public Session(int nb_joueurs, int id_map, int nb_manches, long temps_imparti, long temps_mort_subite)
         {
+            PointApparition pointApparition = null;
+
             joueurs = new List<Joueur>();
             map = new Map();
             map.chargerMap(id_map);
             for (int i = 0; i < nb_joueurs; i++)
             {
+                pointApparition = map.pointApparitions[i];
                 switch (i)
                 {
                     case 0:
-                        joueurs.Add(new Joueur(1, 1.5f, 1.5f, map, SDL.SDL_Scancode.SDL_SCANCODE_W, SDL.SDL_Scancode.SDL_SCANCODE_S, SDL.SDL_Scancode.SDL_SCANCODE_A, SDL.SDL_Scancode.SDL_SCANCODE_D, SDL.SDL_Scancode.SDL_SCANCODE_SPACE));
+                        joueurs.Add(new Joueur(1, 0.5f + pointApparition.X, 0.5f + pointApparition.Y, map, SDL.SDL_Scancode.SDL_SCANCODE_W, SDL.SDL_Scancode.SDL_SCANCODE_S, SDL.SDL_Scancode.SDL_SCANCODE_A, SDL.SDL_Scancode.SDL_SCANCODE_D, SDL.SDL_Scancode.SDL_SCANCODE_E));
                         break;
                     case 1:
-                        joueurs.Add(new Joueur(2, 13.5f, 1.5f, map, SDL.SDL_Scancode.SDL_SCANCODE_UP, SDL.SDL_Scancode.SDL_SCANCODE_DOWN, SDL.SDL_Scancode.SDL_SCANCODE_LEFT, SDL.SDL_Scancode.SDL_SCANCODE_RIGHT, SDL.SDL_Scancode.SDL_SCANCODE_RETURN));
+                        joueurs.Add(new Joueur(2, 0.5f + pointApparition.X, 0.5f + pointApparition.Y, map, SDL.SDL_Scancode.SDL_SCANCODE_UP, SDL.SDL_Scancode.SDL_SCANCODE_DOWN, SDL.SDL_Scancode.SDL_SCANCODE_LEFT, SDL.SDL_Scancode.SDL_SCANCODE_RIGHT, SDL.SDL_Scancode.SDL_SCANCODE_RETURN));
                         break;
                     case 2:
-                        joueurs.Add(new Joueur(3, 1.5f, 9.5f, map));
+                        joueurs.Add(new Joueur(3, 0.5f + pointApparition.X, 0.5f + pointApparition.Y, map, SDL.SDL_Scancode.SDL_SCANCODE_U, SDL.SDL_Scancode.SDL_SCANCODE_J, SDL.SDL_Scancode.SDL_SCANCODE_H, SDL.SDL_Scancode.SDL_SCANCODE_K, SDL.SDL_Scancode.SDL_SCANCODE_I));
                         break;
                     case 3:
-                        joueurs.Add(new Joueur(4, 13.5f, 9.5f, map));
+                        joueurs.Add(new Joueur(4, 0.5f + pointApparition.X, 0.5f + pointApparition.Y, map, SDL.SDL_Scancode.SDL_SCANCODE_KP_5, SDL.SDL_Scancode.SDL_SCANCODE_KP_2, SDL.SDL_Scancode.SDL_SCANCODE_KP_1, SDL.SDL_Scancode.SDL_SCANCODE_KP_3, SDL.SDL_Scancode.SDL_SCANCODE_KP_6));
                         break;
                     default:
                         Program.MessageErr("Nombre de joueurs incorrect!");
@@ -71,13 +74,7 @@ namespace TNTMan.map
                     }
                 }
 
-            map.executerPourToutEntite((e) =>
-            {
-                if (!e.estMort())
-                {
-                    e.dessiner(rendu);
-                }
-            });
+            map.dessiner(rendu);
 
             for (int i = 0; i < joueurs.Count; i++)
             {
@@ -96,54 +93,27 @@ namespace TNTMan.map
 
         public void gererTouches(byte[] etats)
         {
-            map.executerPourToutEntite((e) =>
-            {
-                if (e.estMort())
-                {
-                    map.supprimerEntite(e);
-                }
-                else
-                {
-                    if (e.GetType() != typeof(Joueur))
-                        e.mettreAJour();
-                    else
-                        ((Joueur)e).mettreAJour(etats);
-                }
-            });
+            map.gererTouches(etats);
         }
 
         void finDeLaManche(int raison)
         {
+            PointApparition pointApparition = null;
+
             // si un joueur gagne
             if (raison > 0)
             {
                 joueurs[raison - 1].incrementerVictoire();
             }
 
-            if (mancheActuelle <= nbManches)
+            if (mancheActuelle < nbManches)
             {
                 map.dechargerMap();
                 map.chargerMap(map.getId());
                 foreach (var joueur in joueurs)
                 {
-                    switch (joueur.getId())
-                    {
-                        case 1:
-                            joueur.reapparaitre(1.5f, 1.5f);
-                            break;
-                        case 2:
-                            joueur.reapparaitre(13.5f, 1.5f);
-                            break;
-                        case 3:
-                            joueur.reapparaitre(1.5f, 9.5f);
-                            break;
-                        case 4:
-                            joueur.reapparaitre(13.5f, 9.5f);
-                            break;
-                        default:
-                            Program.MessageErr("Id joueur incorrect!");
-                            break;
-                    }
+                    pointApparition = map.pointApparitions[joueur.getId() - 1];
+                    joueur.reapparaitre(0.5f + pointApparition.X, 0.5f + pointApparition.Y);
                     map.ajoutEntite(joueur);
                 }
 
@@ -169,6 +139,8 @@ namespace TNTMan.map
             // Si il reste un joueur en vie il est déclaré vainqueur
             if (joueurs_en_vie.Count == 1)
                 finDeLaManche(joueurs_en_vie[0].getId());
+
+            map.mettreAJour();
         }
     }
 }

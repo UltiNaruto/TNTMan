@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using TNTMan.entitees;
 using TNTMan.entitees.bonus;
 using TNTMan.map.blocs;
@@ -16,14 +17,14 @@ namespace TNTMan.map
         Bloc[,] listeBlocs;
         List<Entite> listeEntites;
         List<Entite> listeEntitesAAjouter;
-        List<Entite> listeEntitesASupprimer;
+        public List<PointApparition> pointApparitions;
 
         public Map()
         {
             this.listeBlocs = new Bloc[Map.LARGEUR_GRILLE, Map.LONGUEUR_GRILLE];
             this.listeEntites = new List<Entite>();
             this.listeEntitesAAjouter = new List<Entite>();
-            this.listeEntitesASupprimer = new List<Entite>();
+            this.pointApparitions = new List<PointApparition>();
         }
 
         public int getId()
@@ -31,14 +32,18 @@ namespace TNTMan.map
             return id;
         }
 
+        public void dessiner(IntPtr rendu)
+        {
+            foreach(var e in listeEntites.FindAll((e) => !e.estMort()))
+            {
+                e.dessiner(rendu);
+            }
+        }
+
         public void executerPourToutEntite(Action<Entite> action)
         {
             try
             {
-                listeEntites.AddRange(listeEntitesAAjouter);
-                listeEntitesAAjouter.Clear();
-                listeEntitesASupprimer.ForEach((e) => listeEntites.Remove(e));
-                listeEntitesASupprimer.Clear();
                 foreach (Entite e in listeEntites)
                     action(e);
             }
@@ -105,16 +110,11 @@ namespace TNTMan.map
             return listeEntites.Find((e) => (int)e.getPosition().X == x && (int)e.getPosition().Y == y).GetType();
         }
 
-        internal IEnumerable<Entite> trouverEntite(int x, int y, Type type)
+        internal List<Entite> trouverEntite(int x, int y, Type type)
         {
-            return listeEntites.FindAll((e) => e.GetType() == type && (int)e.getPosition().X == x && (int)e.getPosition().Y == y);
-        }
-
-        internal void supprimerEntite(Entite entite)
-        {
-            if (entite == null)
-                return;
-            listeEntitesASupprimer.Add(entite);
+            List<Entite> entites = new List<Entite>(listeEntites);
+            entites.AddRange(listeEntitesAAjouter);
+            return entites.FindAll((e) => (e.GetType() == type || e.GetType().BaseType == type) && (int)e.getPosition().X == x && (int)e.getPosition().Y == y).ToList();
         }
 
         internal void dechargerMap()
@@ -129,7 +129,6 @@ namespace TNTMan.map
             }
             listeEntites.Clear();
             listeEntitesAAjouter.Clear();
-            listeEntitesASupprimer.Clear();
         }
 
         internal void chargerMap(int id)
@@ -179,6 +178,41 @@ namespace TNTMan.map
                 listeBlocs[x, y] = new BlocTerre();
                 i++;
             }
+
+            pointApparitions.Add(new PointApparition(1, 1));
+            pointApparitions.Add(new PointApparition(13, 1));
+            pointApparitions.Add(new PointApparition(1, 9));
+            pointApparitions.Add(new PointApparition(13, 9));
+        }
+
+        internal void gererTouches(byte[] etats)
+        {
+            IEnumerable<Entite> joueurs = listeEntites.FindAll((e) => e.GetType() == typeof(Joueur));
+            foreach (var e in joueurs)
+            {
+                ((Joueur)e).mettreAJour(etats);
+            }
+        }
+
+        internal void mettreAJour()
+        {
+            IEnumerable<Entite> entites = listeEntites.FindAll((e) => e.GetType() != typeof(Joueur));
+            foreach(var e in entites)
+            {
+                e.mettreAJour();
+            }
+
+            listeEntites.RemoveAll((e) => e.estMort());
+            listeEntites.AddRange(listeEntitesAAjouter);
+            listeEntites.Sort(new Comparison<Entite>((e1, e2) =>
+            {
+                if (e1.GetType() == typeof(Joueur) && e2.GetType() != typeof(Joueur))
+                    return 1;
+                if (e1.GetType() != typeof(Joueur) && e2.GetType() == typeof(Joueur))
+                    return -1;
+                return 0;
+            }));
+            listeEntitesAAjouter.Clear();
         }
     }
 }

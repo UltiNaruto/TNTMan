@@ -35,11 +35,8 @@ namespace TNTMan.entitees.bonus
 
         public override void mettreAJour()
         {
-            Joueur joueur = null;
-            RectangleF rect_joueur = RectangleF.Empty;
-            RectangleF rect_bloc = new RectangleF((int)position.X, (int)position.Y, 1.0f, 1.0f);
-            joueur = map.trouverEntite((int)position.X, (int)position.Y, typeof(Joueur)).First() as Joueur;
-            if(joueur != null)
+            Joueur joueur = (Joueur)map.trouverEntite((int)position.X, (int)position.Y, typeof(Joueur)).FirstOrDefault();
+            if (joueur != null)
             {
                 ramasser(joueur);
                 if (!estActif())
@@ -47,7 +44,7 @@ namespace TNTMan.entitees.bonus
                     activer(joueur);
                 }
                 tuer();
-            };
+            }
         }
 
         public void ramasser(Joueur joueur)

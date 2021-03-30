@@ -11,7 +11,7 @@ namespace TNTMan.ecrans
 
         public Ecran_Jouer() : base("Jeu", null)
         {
-            session = new Session(2, 0, 3, 180, 30);
+            session = new Session(4, 0, 3, 180, 30);
             arrierePlan = Gfx.images["fond_ecran"];
         }
 

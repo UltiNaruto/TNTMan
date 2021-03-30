@@ -26,13 +26,13 @@ namespace TNTMan
         {
             Dictionary<String, int> dict_bonus = new Dictionary<String, int>()
             {
-                { "Vitesse+", 10 },
-                { "Vitesse-", 5 },
-                { "Portee+", 10 },
-                { "Portee-", 5 },
-                { "Bombe+", 10 },
-                { "Bombe-", 5 },
-                { "Vide", 30 }
+                { "Vitesse+", 5 },
+                { "Vitesse-", 1 },
+                { "Portee+", 5 },
+                { "Portee-", 1 },
+                { "Bombe+", 5 },
+                { "Bombe-", 1 },
+                { "Vide", 50 }
             };
 
             int nombre = Program.random.Next(0, dict_bonus.Values.Sum());

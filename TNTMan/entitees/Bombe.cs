@@ -14,10 +14,10 @@ namespace TNTMan.entitees
         protected int tempsExplosion;
 
         //Constructeur
-        public Bombe(Joueur joueur) : base(joueur.getMap())
+        public Bombe(int x, int y, Joueur joueur) : base(joueur.getMap())
         {
             proprietaire = joueur;
-            position = new PointF((int)proprietaire.getPosition().X + 0.5f, (int)proprietaire.getPosition().Y + 0.5f);
+            position = new PointF(0.5f + x, 0.5f + y);
             tempsExplosion = 2000; // 2 secondes par défaut
             statut = true;
             portee = joueur.getPortee();
@@ -59,14 +59,14 @@ namespace TNTMan.entitees
             tuer();
             // Apparition des flammes de l'explosion de la bombe
             map.ajoutEntite(new Flamme(_x, _y, proprietaire, map));
-            for (int x = (int)position.X; x >= (int)position.X - portee; x--)
+            for (int x = _x - 1; x >= _x - portee; x--)
             {
                 bloc_en_collision = map.getBlocA(x, _y);
                 if (bloc_en_collision == null)
                 {
                     if (x != _x && x > 0 && x < Map.LARGEUR_GRILLE)
                     {
-                        if (map.trouverEntite(x, _y, typeof(Flamme)) == null)
+                        if (map.trouverEntite(x, _y, typeof(Flamme)).Count == 0)
                         {
                             map.ajoutEntite(new Flamme(x, _y, proprietaire, map));
                         }
@@ -90,14 +90,14 @@ namespace TNTMan.entitees
                 }
             }
 
-            for (int x = (int)position.X + 1; x <= (int)position.X + portee; x++)
+            for (int x = _x + 1; x <= _x + portee; x++)
             {
                 bloc_en_collision = map.getBlocA(x, _y);
                 if (bloc_en_collision == null)
                 {
                     if (x != _x && x > 0 && x < Map.LARGEUR_GRILLE)
                     {
-                        if (map.trouverEntite(x, _y, typeof(Flamme)) == null)
+                        if (map.trouverEntite(x, _y, typeof(Flamme)).Count == 0)
                         {
                             map.ajoutEntite(new Flamme(x, _y, proprietaire, map));
                         }
@@ -121,14 +121,14 @@ namespace TNTMan.entitees
                 }
             }
 
-            for (int y = (int)position.Y; y >= (int)position.Y - portee; y--)
+            for (int y = _y - 1; y >= _y - portee; y--)
             {
                 bloc_en_collision = map.getBlocA(_x, y);
                 if (bloc_en_collision == null)
                 {
                     if (y != _y && y > 0 && y < Map.LONGUEUR_GRILLE)
                     {
-                        if (map.trouverEntite(_x, y, typeof(Flamme)) == null)
+                        if (map.trouverEntite(_x, y, typeof(Flamme)).Count == 0)
                         {
                             map.ajoutEntite(new Flamme(_x, y, proprietaire, map));
                         }
@@ -152,14 +152,14 @@ namespace TNTMan.entitees
                 }
             }
 
-            for (int y = (int)position.Y + 1; y <= (int)position.Y + portee; y++)
+            for (int y = _y + 1; y <= _y + portee; y++)
             {
                 bloc_en_collision = map.getBlocA(_x, y);
                 if (bloc_en_collision == null)
                 {
                     if (y != _y && y > 0 && y < Map.LONGUEUR_GRILLE)
                     {
-                        if (map.trouverEntite(_x, y, typeof(Flamme)) == null)
+                        if (map.trouverEntite(_x, y, typeof(Flamme)).Count == 0)
                         {
                             map.ajoutEntite(new Flamme(_x, y, proprietaire, map));
                         }

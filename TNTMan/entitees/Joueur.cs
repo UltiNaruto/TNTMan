@@ -1,5 +1,6 @@
 ﻿using SDL2;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using TNTMan.map;
@@ -50,24 +51,11 @@ namespace TNTMan.entitees
         // Usage des tailles sur la grille et non en pixels
         public override bool enCollisionAvec()
         {
-            bool res = false;
             Point direction = new Point(vitesse.X == 0 ? 0 : (int)(vitesse.X / Math.Abs(vitesse.X)), vitesse.Y == 0 ? 0 : (int)(vitesse.Y / Math.Abs(vitesse.Y)));
-            RectangleF rect_joueur = new RectangleF((int)position.X + direction.X + 0.1f, (int)position.Y + direction.Y + 0.1f, 0.8f, 0.8f);
-            RectangleF rect_bloc = new RectangleF((int)position.X, (int)position.Y, 1.0f, 1.0f);
             if (map.getBlocA((int)position.X + direction.X, (int)position.Y + direction.Y) != null)
                 return true;
-            map.executerPourToutEntite((e) =>
-            {
-                if (e.GetType() == typeof(Bombe))
-                {
-                    if (rect_joueur.IntersectsWith(rect_bloc))
-                    {
-                        res = true;
-                        return;
-                    }
-                }
-            });
-            return res;
+
+            return map.trouverEntite((int)position.X + direction.X, (int)position.Y + direction.Y, typeof(Bombe)).Count == 1;
         }
 
         public override void deplacer(float _ax, float _ay)
@@ -231,27 +219,25 @@ namespace TNTMan.entitees
 
         public Bombe poserBombe()
         {
+            Point position_bombe = new Point((int)position.X, (int)position.Y);
             DateTime temps_actuel = DateTime.Now;
+            Point direction = new Point(vitesse.X == 0 ? 0 : (int)(vitesse.X / Math.Abs(vitesse.X)), vitesse.Y == 0 ? 0 : (int)(vitesse.Y / Math.Abs(vitesse.Y)));
             if (nb_bombes == 0)
                 return null;
 
-            // Le joueur n'est pas au centre de la case horizontalement
-            if (position.X - Math.Truncate(position.X) != 0.25f)
-                return null;
-
-            // Le joueur n'est pas au centre de la case verticalement
-            if (position.Y - Math.Truncate(position.Y) != 0.25f)
+            // vérifier si la bombe va être posé sur un bloc déjà existant
+            if (map.getBlocA(position_bombe.X, position_bombe.Y) != null)
                 return null;
 
             // vérifier si la bombe est déjà posé sur la case
-            if (map.trouverEntite((int)position.X, (int)position.Y, typeof(Bombe)).Count() > 0)
+            if (map.trouverEntite(position_bombe.X, position_bombe.Y, typeof(Bombe)).Count() > 0)
                 return null;
 
-            if ((temps_actuel - temps_avant_derniere_bombe_poser).TotalMilliseconds >= 60)
+            if ((temps_actuel - temps_avant_derniere_bombe_poser).TotalMilliseconds >= 100)
             {
                 decrementerBombe();
                 temps_avant_derniere_bombe_poser = temps_actuel;
-                return new Bombe(this);
+                return new Bombe(position_bombe.X, position_bombe.Y, this);
             }
             return null;
         }
