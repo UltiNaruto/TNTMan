@@ -3,7 +3,7 @@
     enum TypeBonus
     {
         Bombe,
-        Vie,
-        Personnage
+        Personnage,
+        CapaciteSpecial
     }
 }

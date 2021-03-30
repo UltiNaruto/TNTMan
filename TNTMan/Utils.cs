@@ -1,27 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
+using TNTMan.entitees.bonus;
+using TNTMan.map;
 
 namespace TNTMan
 {
     class Utils
     {
-        internal static IntPtr StringToPtr(string str)
-        {
-            IntPtr ptr = IntPtr.Zero;
-            byte[] chars = null;
-
-            if (str.Length == 0) return ptr;
-
-            ptr = new IntPtr();
-            chars = System.Text.Encoding.ASCII.GetBytes(str + '\0');
-            for (int i = 0; i < str.Length; i++)
-                Marshal.Copy(chars, 0, ptr + i, chars.Length);
-
-            return ptr;
-        }
-
         internal static byte[] PtrToArray(IntPtr ptr, int size)
         {
             List<byte> liste = null;
@@ -35,61 +22,55 @@ namespace TNTMan
             return liste.ToArray();
         }
 
-        internal static PointF ArrondiPositionBloc(PointF pos)
+        static String selectionnerBonusAleatoire()
         {
-            PointF diff = new PointF(pos.X - (int)pos.X, pos.Y - (int)pos.Y);
-            if (pos.X < 0.0f)
+            Dictionary<String, int> dict_bonus = new Dictionary<String, int>()
             {
-                if (diff.X > -0.24f)
-                {
-                    pos.X += 1.0f;
-                }
-                if (diff.X < -0.76f)
-                {
-                    pos.X -= 1.0f;
-                }
-            }
-            if (pos.X > 0.0f)
+                { "Vitesse+", 10 },
+                { "Vitesse-", 5 },
+                { "Portee+", 10 },
+                { "Portee-", 5 },
+                { "Bombe+", 10 },
+                { "Bombe-", 5 },
+                { "Vide", 30 }
+            };
+
+            int nombre = Program.random.Next(0, dict_bonus.Values.Sum());
+            int n = 0;
+            int n_suivant = 0;
+            foreach (KeyValuePair<String, int> kvp in dict_bonus)
             {
-                if (diff.X < 0.24f)
-                {
-                    pos.X -= 1.0f;
-                }
-                if (diff.X > 0.76f)
-                {
-                    pos.X += 1.0f;
-                }
+                n_suivant += kvp.Value;
+                if (nombre >= n && nombre < n_suivant)
+                    return kvp.Key;
+                n = n_suivant;
             }
-            if (pos.Y < 0.0f)
-            {
-                if (diff.Y > -0.24f)
-                {
-                    pos.Y += 1.0f;
-                }
-                if (diff.Y < -0.76f)
-                {
-                    pos.Y -= 1.0f;
-                }
-            }
-            if (pos.Y > 0.0f)
-            {
-                if (diff.Y < 0.24f)
-                {
-                    pos.Y -= 1.0f;
-                }
-                if (diff.Y > 0.76f)
-                {
-                    pos.Y += 1.0f;
-                }
-            }
-            pos.X = (int)pos.X;
-            pos.Y = (int)pos.Y;
-            return pos;
+
+            // ne devrait pas arriver mais on retourne quand même
+            return "Vide";
         }
 
-        internal static PointF ArrondiPositionBloc(float x, float y)
+        internal static Bonus creerBonusAleatoire(Map _map, float x, float y)
         {
-            return ArrondiPositionBloc(new PointF(x, y));
+            String nom_bonus = selectionnerBonusAleatoire();
+            switch (nom_bonus)
+            {
+                case "Vitesse+":
+                    return new Bonus_Vitesse_Plus(_map, x, y);
+                case "Vitesse-":
+                    return new Bonus_Vitesse_Moins(_map, x, y);
+                case "Portee+":
+                    return new Bonus_Portee_Plus(_map, x, y);
+                case "Portee-":
+                    return new Bonus_Portee_Moins(_map, x, y);
+                case "Bombe+":
+                    return new Bonus_Bombe_Plus(_map, x, y);
+                case "Bombe-":
+                    return new Bonus_Bombe_Moins(_map, x, y);
+                case "Vide":
+                default:
+                    return null;
+            }
         }
     }
 }

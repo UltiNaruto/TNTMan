@@ -1,8 +1,6 @@
 ﻿using SDL2;
 using System;
 using System.Drawing;
-using SDL2;
-using System.Linq;
 
 namespace TNTMan.ecrans
 {
@@ -11,6 +9,7 @@ namespace TNTMan.ecrans
         public Ecran_Instructions(Ecran precedent) : base("Instructions", precedent)
         {
             Size resolution = Gfx.getResolution();
+            arrierePlan = Gfx.images["fond_ecran"];
             boutons.Add(new Bouton(0, 45, resolution.Height - 30, 18, "Retour"));
         }
 
@@ -18,7 +17,6 @@ namespace TNTMan.ecrans
         {
             base.dessinerEcran(rendu);
             Size resolution = Gfx.getResolution();
-            Gfx.nettoyerEcran(Color.SkyBlue);
             Gfx.dessinerTexte(resolution.Width / 2 - 100, 60, 50, Color.Red, titre);
             Gfx.dessinerTexte(45, 150, 20, Color.Red, "Se déplacer : Z (haut), S (bas), Q (gauche), D (droite)");
             Gfx.dessinerTexte(45, 200, 20, Color.Red, "Poser une bombe : ESPACE");

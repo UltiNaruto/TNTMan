@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace TNTMan.map.blocs
 {
@@ -37,7 +38,8 @@ namespace TNTMan.map.blocs
 
         public virtual void dessiner(IntPtr rendu, int bloc_x, int bloc_y)
         {
-
+            Point position = Map.getPositionEcranDepuis(bloc_x, bloc_y);
+            Gfx.dessinerImage(position.X, position.Y, Bloc.TAILLE_BLOC, Bloc.TAILLE_BLOC, Gfx.images["bloc_" + getId()]);
         }
 
         public void subiDegats()

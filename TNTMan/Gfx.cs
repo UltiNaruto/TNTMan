@@ -1,5 +1,6 @@
 ﻿using SDL2;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using TNTMan.ecrans;
@@ -13,6 +14,46 @@ namespace TNTMan
         static IntPtr[] police = null;
         static Ecran ecranActuel = null;
         static DateTime temps_derniere_pression_touche = DateTime.Now;
+
+        internal static Dictionary<String, IntPtr> images;
+
+        internal static int prechargerImages()
+        {
+            try
+            {
+                images = new Dictionary<String, IntPtr>()
+                {
+                    { "explosion", chargerImage(@"images\explosion.png") },
+                    { "fond_ecran", chargerImage(@"images\fond_ecran.png") },
+                    // blocs
+                    { "bloc_1", chargerImage(@"images\blocs\bloc_1.png") },
+                    { "bloc_2", chargerImage(@"images\blocs\bloc_2.png") },
+                    // bombes
+                    { "bombe", chargerImage(@"images\bombes\bombe.png") },
+                    // joueurs
+                    { "j1_haut", chargerImage(@"images\joueurs\1\haut.png") },
+                    { "j1_bas", chargerImage(@"images\joueurs\1\bas.png") },
+                    { "j1_gauche", chargerImage(@"images\joueurs\1\gauche.png") },
+                    { "j1_droite", chargerImage(@"images\joueurs\1\droite.png") },
+                    { "j2_haut", chargerImage(@"images\joueurs\2\haut.png") },
+                    { "j2_bas", chargerImage(@"images\joueurs\2\bas.png") },
+                    { "j2_gauche", chargerImage(@"images\joueurs\2\gauche.png") },
+                    { "j2_droite", chargerImage(@"images\joueurs\2\droite.png") },
+                    { "j3_haut", chargerImage(@"images\joueurs\3\haut.png") },
+                    { "j3_bas", chargerImage(@"images\joueurs\3\bas.png") },
+                    { "j3_gauche", chargerImage(@"images\joueurs\3\gauche.png") },
+                    { "j3_droite", chargerImage(@"images\joueurs\3\droite.png") },
+                    { "j4_haut", chargerImage(@"images\joueurs\4\haut.png") },
+                    { "j4_bas", chargerImage(@"images\joueurs\4\bas.png") },
+                    { "j4_gauche", chargerImage(@"images\joueurs\4\gauche.png") },
+                    { "j4_droite", chargerImage(@"images\joueurs\4\droite.png") }
+                };
+
+                return 0;
+            } catch {
+                return 1;
+            }
+        }
 
         internal static int initialiser_2d()
         {
@@ -70,6 +111,16 @@ namespace TNTMan
                 SDL.SDL_DestroyWindow(fenetre);
                 SDL.SDL_Quit();
                 return 4;
+            }
+
+            if(prechargerImages() > 0)
+            {
+                Program.MessageErr("prechargerImages: ERREUR ({0})\n", SDL.SDL_GetError());
+                SDL_image.IMG_Quit();
+                SDL.SDL_DestroyRenderer(rendu);
+                SDL.SDL_DestroyWindow(fenetre);
+                SDL.SDL_Quit();
+                return 5;
             }
 
             changerEcran(new Ecran_Titre());
@@ -154,9 +205,9 @@ namespace TNTMan
             int nb_etats = 0;
             byte[] etats = Utils.PtrToArray(SDL.SDL_GetKeyboardState(out nb_etats), nb_etats);
             if (ecranActuel == null || etats == null) return;
-            ecranActuel.gererSouris();
-            if (ecranActuel.GetType() == typeof(Ecran_Jouer) || (temps_actuel - temps_derniere_pression_touche).TotalMilliseconds >= 120)
+            if (ecranActuel.GetType() == typeof(Ecran_Jouer) || (temps_actuel - temps_derniere_pression_touche).TotalMilliseconds >= 100)
             {
+                ecranActuel.gererSouris();
                 ecranActuel.gererTouches(etats);
                 temps_derniere_pression_touche = temps_actuel;
             }
@@ -237,9 +288,10 @@ namespace TNTMan
             dessinerRectangle(x, y, w, h, px, couleur);
         }
 
-        internal static Size getTailleRectangleTexte(String texte, int px)
+        internal static Size getTailleRectangleTexte(int px, String fmt, params Object[] args)
         {
             int w = 0, h = 0;
+            String texte = String.Format(fmt, args);
             if (police[px] == IntPtr.Zero) return new Size(-1, -1);
             SDL_ttf.TTF_SizeText(police[px], texte, out w, out h);
             return new Size(w, h);
@@ -247,7 +299,6 @@ namespace TNTMan
 
         internal static void dessinerTexte(int x, int y, int px, Color couleur, String format, params Object[] args)
         {
-            String message = String.Format(format, args);
             IntPtr surfaceMessage;
             IntPtr texMessage;
             SDL.SDL_Rect boiteMessage;
@@ -255,8 +306,8 @@ namespace TNTMan
 
             if (rendu == IntPtr.Zero || police[px] == IntPtr.Zero) return;
 
-            tailleBoiteMessage = getTailleRectangleTexte(message, px);
-            surfaceMessage = SDL_ttf.TTF_RenderText_Solid(police[px], message, new SDL.SDL_Color() { a = couleur.A, r = couleur.R, g = couleur.G, b = couleur.B});
+            tailleBoiteMessage = getTailleRectangleTexte(px, format, args);
+            surfaceMessage = SDL_ttf.TTF_RenderText_Solid(police[px], String.Format(format, args), new SDL.SDL_Color() { a = couleur.A, r = couleur.R, g = couleur.G, b = couleur.B});
 
             if (surfaceMessage == IntPtr.Zero) return;
 

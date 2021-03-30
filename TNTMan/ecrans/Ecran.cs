@@ -25,7 +25,9 @@ namespace TNTMan.ecrans
 
         public virtual void dessinerEcran(IntPtr rendu)
         {
+            Size resolution = Gfx.getResolution();
             if (arrierePlan == IntPtr.Zero) return;
+            Gfx.dessinerImage(0, 0, resolution.Width, resolution.Height, arrierePlan);
         }
 
         public void gererSouris()

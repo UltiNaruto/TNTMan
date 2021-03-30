@@ -1,6 +1,7 @@
 ﻿using SDL2;
 using System;
 using System.Drawing;
+using System.Linq;
 using TNTMan.map;
 
 namespace TNTMan.entitees
@@ -8,28 +9,32 @@ namespace TNTMan.entitees
     class Joueur : Entite
     {
         int id;
-        Color couleur;
         float vitesse_deplacement;
         int nb_bombes;
+        int max_nb_bombes;
         int portee_bombe;
         DateTime temps_avant_derniere_bombe_poser = DateTime.Now;
+        SDL.SDL_Scancode[] touches;
+        Score score;
 
-        public Joueur(int _id, float _x, float _y, Map _map) : base(_map)
+        public Joueur(int _id, float _x, float _y, Map _map, params SDL.SDL_Scancode[] _touches) : base(_map)
         {
             id = _id;
             statut = true;
             position = new PointF(_x, _y);
             vitesse_deplacement = 0.05f;
             portee_bombe = 1;
-            nb_bombes = 1;
+            nb_bombes = max_nb_bombes = 2;
             if (id == 1)
-                couleur = Color.Blue;
+                texture = Gfx.images["j1_bas"];
             if (id == 2)
-                couleur = Color.Red;
+                texture = Gfx.images["j2_bas"];
             if (id == 3)
-                couleur = Color.Yellow;
+                texture = Gfx.images["j3_bas"];
             if (id == 4)
-                couleur = Color.Pink;
+                texture = Gfx.images["j4_bas"];
+            touches = _touches;
+            score = new Score();
         }
 
         public int getId()
@@ -37,9 +42,9 @@ namespace TNTMan.entitees
             return id;
         }
 
-        public Color getCouleur()
+        public IntPtr getTexture()
         {
-            return couleur;
+            return texture;
         }
 
         // Usage des tailles sur la grille et non en pixels
@@ -80,12 +85,23 @@ namespace TNTMan.entitees
                 vitesse.X = 0;
                 vitesse.Y = 0;
             }
+            else
+            {
+                if(_ax > 0.0f)
+                    texture = Gfx.images["j"+getId()+"_droite"];
+                if (_ax < 0.0f)
+                    texture = Gfx.images["j" + getId() + "_gauche"];
+                if (_ay < 0.0f)
+                    texture = Gfx.images["j" + getId() + "_haut"];
+                if (_ay > 0.0f)
+                    texture = Gfx.images["j" + getId() + "_bas"];
+            }
         }
 
         public override void dessiner(IntPtr rendu)
         {
             Point _position = Map.getPositionEcranDepuis(position.X, position.Y, 24, 24);
-            Gfx.remplirRectangle(_position.X, _position.Y, 24, 24, 1, this.getCouleur(), this.getCouleur());
+            Gfx.dessinerImage(_position.X, _position.Y, 24, 24, texture);
         }
 
         public void mettreAJour(byte[] etats)
@@ -96,23 +112,23 @@ namespace TNTMan.entitees
             if (estMort())
                 return;
 
-            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_W] > 0)
+            if (etats[(int)touches[0]] > 0)
             {
                 deplacer(0.0f, -1.0f);
             }
-            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_S] > 0)
+            else if (etats[(int)touches[1]] > 0)
             {
                 deplacer(0.0f, 1.0f);
             }
-            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_A] > 0)
+            else if (etats[(int)touches[2]] > 0)
             {
                 deplacer(-1.0f, 0.0f);
             }
-            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_D] > 0)
+            else if (etats[(int)touches[3]] > 0)
             {
                 deplacer(1.0f, 0.0f);
             }
-            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE] > 0)
+            if (etats[(int)touches[4]] > 0)
             {
                 map.ajoutEntite(poserBombe());
             }
@@ -140,14 +156,77 @@ namespace TNTMan.entitees
             return this.nb_bombes;
         }
 
+        public int getNbTues()
+        {
+            return score.getNbTues();
+        }
+
+        public void incrementerTue()
+        {
+            score.incrementerTue();
+        }
+
+        public int getNbVictoires()
+        {
+            return score.getNbVictoires();
+        }
+
+        public void incrementerVictoire()
+        {
+            score.incrementerVictoire();
+        }
+
         public void incrementerBombe()
         {
-            nb_bombes++;
+            if (nb_bombes < max_nb_bombes)
+                nb_bombes++;
         }
 
         public void decrementerBombe()
         {
-            nb_bombes--;
+            if (nb_bombes > 0)
+                nb_bombes--;
+        }
+
+        public int getMaxNbBombes()
+        {
+            return this.max_nb_bombes;
+        }
+
+        public void incrementerMaxBombe()
+        {
+            if(max_nb_bombes < 10)
+                max_nb_bombes++;
+        }
+
+        public void decrementerMaxBombe()
+        {
+            if(max_nb_bombes > 1)
+                max_nb_bombes--;
+        }
+
+        public void incrementerPorteeBombe()
+        {
+            if(portee_bombe < 10)
+                portee_bombe++;
+        }
+
+        public void decrementerPorteeBombe()
+        {
+            if (portee_bombe > 1)
+                portee_bombe--;
+        }
+
+        public void incrementerVitesse()
+        {
+            if (vitesse_deplacement < 0.1f)
+                vitesse_deplacement += 0.01f;
+        }
+
+        public void decrementerVitesse()
+        {
+            if (vitesse_deplacement > 0.05f)
+                vitesse_deplacement -= 0.01f;
         }
 
         public Bombe poserBombe()
@@ -156,12 +235,20 @@ namespace TNTMan.entitees
             if (nb_bombes == 0)
                 return null;
 
-            if ((temps_actuel - temps_avant_derniere_bombe_poser).TotalMilliseconds >= 120)
-            {
-                // vérifier si la bombe est déjà posé sur la case
-                if (map.entiteExiste((int)position.X, (int)position.Y) == typeof(Bombe))
-                    return null;
+            // Le joueur n'est pas au centre de la case horizontalement
+            if (position.X - Math.Truncate(position.X) != 0.25f)
+                return null;
 
+            // Le joueur n'est pas au centre de la case verticalement
+            if (position.Y - Math.Truncate(position.Y) != 0.25f)
+                return null;
+
+            // vérifier si la bombe est déjà posé sur la case
+            if (map.trouverEntite((int)position.X, (int)position.Y, typeof(Bombe)).Count() > 0)
+                return null;
+
+            if ((temps_actuel - temps_avant_derniere_bombe_poser).TotalMilliseconds >= 60)
+            {
                 decrementerBombe();
                 temps_avant_derniere_bombe_poser = temps_actuel;
                 return new Bombe(this);
@@ -174,19 +261,19 @@ namespace TNTMan.entitees
             return this.portee_bombe;
         }
 
-        public void setPortee(int p)
-        {
-            this.portee_bombe = p;
-        }
-
         public float getVitesse()
         {
             return this.vitesse_deplacement;
         }
 
-        public void setVitesse(float vitesse)
+        public void reapparaitre(float x, float y)
         {
-            this.vitesse_deplacement = vitesse;
+            this.position = new PointF(x, y);
+            this.nb_bombes = this.max_nb_bombes = 1;
+            this.vitesse_deplacement = 0.05f;
+            this.portee_bombe = 1;
+            this.vitesse = new PointF(0.0f, 0.0f);
+            this.statut = true;
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Linq;
 using TNTMan.entitees.bonus.enums;
 using TNTMan.map;
 
@@ -7,102 +7,57 @@ namespace TNTMan.entitees.bonus
 {
     class Bonus : Entite
     {
-        Joueur proprietaire;
-        string nom;
-        Color couleur, couleurExt;
-        long duree;
-        TypeBonus type;
-        bool actif;
-
-        public Bonus (string n, Color c, Color ce, long d, TypeBonus tb, bool a)
+        public Bonus (Map _map, float x, float y) : base(_map)
         {
-            proprietaire = null;
-            nom = n;
-            couleur = c;
-            couleurExt = ce;
-            duree = d;
-            type = tb;
-            actif = a;
+            position = new PointF(x, y);
+            statut = true;
         }
 
-        public Joueur getProprietaire()
+        public virtual string getNom()
         {
-            return proprietaire;
+            return "";
         }
 
-        public void setProprietaire(Joueur joueur)
+        public virtual long getDuree()
         {
-            proprietaire = joueur;
+            return -1;
         }
 
-        public string getNom()
+        public virtual TypeBonus getType()
         {
-            return nom;
+            return default(TypeBonus);
         }
 
-        public void setNom(string n)
+        public virtual bool estActif()
         {
-            nom = n;
+            return false;
         }
 
-        public long getDuree()
+        public override void mettreAJour()
         {
-            return duree;
-        }
-
-        public void setDuree(long d)
-        {
-            duree = d;
-        }
-
-        public TypeBonus getType()
-        {
-            return type;
-        }
-
-        public void setType(TypeBonus t)
-        {
-            type= t;
-        }
-
-        public bool getActif()
-        {
-            return actif;
-        }
-
-        public void setActif(bool a)
-        {
-            actif = a;
-        }
-
-        public bool estActif()
-        {
-            if (getActif())
+            Joueur joueur = null;
+            RectangleF rect_joueur = RectangleF.Empty;
+            RectangleF rect_bloc = new RectangleF((int)position.X, (int)position.Y, 1.0f, 1.0f);
+            joueur = map.trouverEntite((int)position.X, (int)position.Y, typeof(Joueur)).First() as Joueur;
+            if(joueur != null)
             {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        public virtual void activer()
-        {
+                ramasser(joueur);
+                if (!estActif())
+                {
+                    activer(joueur);
+                }
+                tuer();
+            };
         }
 
-        public override void dessiner(IntPtr rendu)
+        public void ramasser(Joueur joueur)
         {
-            Point _position = Map.getPositionEcranDepuis(position.X, position.Y, 16, 16);
-            Gfx.remplirRectangle(_position.X, _position.Y, 16, 16, 1, couleur, couleurExt);
+            // si bonus actif alors stocker son nom pour le joueur
+            // ainsi que sa durée restante
         }
 
-        public override void mettreAJour(Map map)
+        public virtual void activer(Joueur joueur)
         {
-            int _x = (int)position.X;
-            int _y = (int)position.Y;
-            Joueur joueur_en_collision = null;
-            // Disparition de l'écran si le joueur rentre en collision
-            // Disparition de la liste des entités après que l'effet soit dissipé
         }
     }
 }

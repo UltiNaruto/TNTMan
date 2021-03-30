@@ -1,22 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TNTMan.entitees
+﻿namespace TNTMan.entitees
 {
     class Score
     {
-        public int NbVictoires;
-        public int NbTues;
+        int nbVictoires;
+        int nbTues;
 
-        void IncrementerVictoire()
+        public int getNbVictoires()
         {
-            this.NbVictoires++;
+            return this.nbVictoires;
         }
 
-        void IncrementerTues()
+        public int getNbTues()
         {
-            this.NbTues++;
+            return this.nbTues;
+        }
+
+        public void incrementerVictoire()
+        {
+            this.nbVictoires++;
+        }
+
+        public void incrementerTue()
+        {
+            this.nbTues++;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace TNTMan.ecrans
             position = new Point(x, y);
             taillePolice = px;
             texte = String.Format(fmt, args);
-            taille_rect_texte = Gfx.getTailleRectangleTexte(texte, taillePolice);
+            taille_rect_texte = Gfx.getTailleRectangleTexte(taillePolice, texte);
             if (w < taille_rect_texte.Width)
                 w = taille_rect_texte.Width;
             if (h < taille_rect_texte.Height)
@@ -53,7 +53,7 @@ namespace TNTMan.ecrans
 
         public void dessiner(IntPtr rendu, bool sel)
         {
-            Size taille_rect_texte = Gfx.getTailleRectangleTexte(texte, taillePolice);
+            Size taille_rect_texte = Gfx.getTailleRectangleTexte(taillePolice, texte);
             Gfx.remplirRectangle(position.X, position.Y, taille.Width, taille.Height, 1, sel ? couleurSel : couleur, sel ? couleurSelTexte : couleurTexte);
             Gfx.dessinerTexte(position.X + (taille.Width / 2 - taille_rect_texte.Width / 2), position.Y+(taille.Height / 2 - taille_rect_texte.Height / 2), taillePolice, sel ? couleurSelTexte : couleurTexte, texte);
         }

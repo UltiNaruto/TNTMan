@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Linq;
 using TNTMan.map;
 
 namespace TNTMan.entitees
@@ -10,6 +11,7 @@ namespace TNTMan.entitees
         public PointF vitesse;
         protected bool statut;
         protected Map map;
+        protected IntPtr texture;
 
         protected Entite() { }
 
@@ -45,11 +47,11 @@ namespace TNTMan.entitees
 
         public virtual bool enCollisionAvec()
         {
-            Entite entite_en_collision = null;
+            Entite[] entite_en_collision = null;
             if (map.getBlocA((int)position.X, (int)position.Y) == null)
                 return false;
-            entite_en_collision = map.trouverEntite((int)position.X, (int)position.Y);
-            if (entite_en_collision == null)
+            entite_en_collision = map.trouverEntite((int)position.X, (int)position.Y, typeof(Bombe)).ToArray();
+            if (entite_en_collision.Length == 0)
                 return false;
             return true;
         }

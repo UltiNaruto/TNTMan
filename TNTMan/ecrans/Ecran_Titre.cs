@@ -10,6 +10,7 @@ namespace TNTMan.ecrans
         public Ecran_Titre() : base("TNTMan", null)
         {
             Size resolution = Gfx.getResolution();
+            arrierePlan = Gfx.images["fond_ecran"];
             boutons.Add(new Bouton(0, resolution.Width / 2 - 100, resolution.Height / 2 - 100, 18, "Nouvelle Partie"));
             boutons.Add(new Bouton(1, resolution.Width / 2 - 100, resolution.Height / 2 - 50, 18, "Instructions"));
             boutons.Add(new Bouton(2, resolution.Width / 2 - 100, resolution.Height / 2, 18, "Options"));
@@ -21,7 +22,6 @@ namespace TNTMan.ecrans
         {
             base.dessinerEcran(rendu);
             Size resolution = Gfx.getResolution();
-            Gfx.nettoyerEcran(Color.SkyBlue);
             Gfx.dessinerTexte(resolution.Width / 2 - 100, 60, 50, Color.Red, titre);
             foreach (Bouton bouton in boutons)
             {
