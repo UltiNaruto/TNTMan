@@ -30,5 +30,13 @@ namespace TNTMan.ecrans
             session.gererTouches(etats);
             session.mettreAJour();
         }
+
+        public void mettreAJour()
+        {
+            if (session.enPause)
+            {
+                Gfx.changerEcran(new Ecran_Pause(this));
+            }
+        }
     }
 }

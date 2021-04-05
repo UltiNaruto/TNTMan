@@ -17,10 +17,12 @@ namespace TNTMan.map
         int nbManches;
         long tempsImparti;
         DateTime tempsDebutManche;
+        DateTime tempsDebutPause = DateTime.MinValue;
         DateTime tempsFinManche = DateTime.MinValue;
         long tempsMortSubite;
         long tempsRestant;
         int raisonFinManche = 0;
+        public bool enPause = false;
 
         public Session(int nb_joueurs, int id_map, int nb_manches, long temps_imparti, long temps_mort_subite)
         {
@@ -109,6 +111,11 @@ namespace TNTMan.map
         public void gererTouches(byte[] etats)
         {
             map.gererTouches(etats);
+            // Bouton ECHAP pour faire pause
+            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_ESCAPE] > 0)
+            {
+                enPause = true;
+            }
         }
 
         void finDeLaManche()
