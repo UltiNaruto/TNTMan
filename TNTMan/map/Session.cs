@@ -26,7 +26,7 @@ namespace TNTMan.map
         {
             PointApparition pointApparition = null;
 
-            musique = @"jeu_"+Program.random.Next(1, 2);
+            musique = @"jeu_"+Program.random.Next(1, 3);
             joueurs = new List<Joueur>();
             gagnant_MancheActuelle = null;
             map = new Map();

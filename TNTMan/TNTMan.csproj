@@ -10,12 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="NetCoreAudio">
-      <HintPath>libs\NetCoreAudio.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="res\images\blocs\bloc_1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
