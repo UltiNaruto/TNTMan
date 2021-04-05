@@ -87,8 +87,9 @@ namespace TNTMan.ecrans
             // Quitter
             if (bouton.getId() == 100)
             {
-                Sfx.deinitialiser_son();
                 Gfx.deinitialiser_2d();
+                Sfx.deinitialiser_son();
+                SDL.SDL_Quit();
             }
         }
     }

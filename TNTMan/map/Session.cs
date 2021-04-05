@@ -20,7 +20,7 @@ namespace TNTMan.map
         DateTime tempsFinManche = DateTime.MinValue;
         long tempsMortSubite;
         long tempsRestant;
-        Joueur gagnant_MancheActuelle;
+        int raisonFinManche = 0;
 
         public Session(int nb_joueurs, int id_map, int nb_manches, long temps_imparti, long temps_mort_subite)
         {
@@ -28,7 +28,6 @@ namespace TNTMan.map
 
             musique = @"jeu_"+Program.random.Next(1, 3);
             joueurs = new List<Joueur>();
-            gagnant_MancheActuelle = null;
             map = new Map();
             map.chargerMap(id_map);
             for (int i = 0; i < nb_joueurs; i++)
@@ -71,36 +70,39 @@ namespace TNTMan.map
             DateTime temps_actuel = DateTime.Now;
             Size resolution = Gfx.getResolution();
             Size cadre_temps_restant = Gfx.getTailleRectangleTexte(18, "Temps Restant : {0}:{1:D2}", tempsRestant / 60, tempsRestant % 60);
-            for (int x = 0; x < Map.LARGEUR_GRILLE; x++)
-                for (int y = 0; y < Map.LONGUEUR_GRILLE; y++)
-                {
-                    Bloc bloc = map.getBlocA(x, y);
-                    if (bloc != null)
-                    {
-                        bloc.dessiner(rendu, x, y);
-                    }
-                }
-
-            map.dessiner(rendu);
-
-            for (int i = 0; i < joueurs.Count; i++)
-            {
-                if (i >= 2)
-                {
-                    Gfx.dessinerTexte(5, resolution.Height - i * 20, 18, Color.Black, "J{0} - B:{1}/{4}|P:{2}|V:{3}", i + 1, joueurs[i].getNbBombes(), joueurs[i].getPortee(), (int)((joueurs[i].getVitesse() - 0.05) / 0.01f) + 1, joueurs[i].getMaxNbBombes());
-                }
-                else
-                {
-                    Gfx.dessinerTexte(5, 5 + i * 20, 18, Color.Black, "J{0} - B:{1}/{4}|P:{2}|V:{3}", i + 1, joueurs[i].getNbBombes(), joueurs[i].getPortee(), (int)((joueurs[i].getVitesse() - 0.05) / 0.01f) + 1, joueurs[i].getMaxNbBombes());
-                }
-            }
-
-            Gfx.dessinerTexte(resolution.Width / 2 - cadre_temps_restant.Width / 2, 5, 18, Color.Black, "Temps Restant : {0}:{1:D2}", tempsRestant / 60, tempsRestant % 60);
 
             // Affichage du message de transition entre les manches
             if ((tempsFinManche > DateTime.MinValue) && (temps_actuel - tempsFinManche).TotalSeconds < 10)
             {
                 afficherTransition(resolution, temps_actuel);
+            }
+            else
+            {
+                Gfx.dessinerTexte(resolution.Width / 2 - cadre_temps_restant.Width / 2, 5, 18, Color.Black, "Temps Restant : {0}:{1:D2}", tempsRestant / 60, tempsRestant % 60);
+
+                for (int x = 0; x < Map.LARGEUR_GRILLE; x++)
+                    for (int y = 0; y < Map.LONGUEUR_GRILLE; y++)
+                    {
+                        Bloc bloc = map.getBlocA(x, y);
+                        if (bloc != null)
+                        {
+                            bloc.dessiner(rendu, x, y);
+                        }
+                    }
+
+                map.dessiner(rendu);
+
+                for (int i = 0; i < joueurs.Count; i++)
+                {
+                    if (i >= 2)
+                    {
+                        Gfx.dessinerTexte(5, resolution.Height - i * 20, 18, Color.Black, "J{0} - B:{1}/{4}|P:{2}|V:{3}", i + 1, joueurs[i].getNbBombes(), joueurs[i].getPortee(), (int)((joueurs[i].getVitesse() - 0.05) / 0.01f) + 1, joueurs[i].getMaxNbBombes());
+                    }
+                    else
+                    {
+                        Gfx.dessinerTexte(5, 5 + i * 20, 18, Color.Black, "J{0} - B:{1}/{4}|P:{2}|V:{3}", i + 1, joueurs[i].getNbBombes(), joueurs[i].getPortee(), (int)((joueurs[i].getVitesse() - 0.05) / 0.01f) + 1, joueurs[i].getMaxNbBombes());
+                    }
+                }
             }
         }
 
@@ -109,14 +111,14 @@ namespace TNTMan.map
             map.gererTouches(etats);
         }
 
-        void finDeLaManche(int raison)
+        void finDeLaManche()
         {
             PointApparition pointApparition = null;
 
             // si un joueur gagne
-            if (raison > 0)
+            if (raisonFinManche > 0)
             {
-                joueurs[raison - 1].incrementerVictoire();
+                joueurs[raisonFinManche - 1].incrementerVictoire();
             }
 
             if (mancheActuelle < nbManches)
@@ -131,8 +133,8 @@ namespace TNTMan.map
                     map.ajoutEntite(joueur);
                 }
 
-                // On réintiliaise le gagnant
-                gagnant_MancheActuelle = null;
+                // On réinitialise la raison de la fin de manche
+                raisonFinManche = 0;
                 // On réinitialise le temps
                 tempsDebutManche = DateTime.Now;
                 // On passe à la manche suivante
@@ -149,34 +151,32 @@ namespace TNTMan.map
 
         public void afficherTransition(Size resolution, DateTime temps_actuel)
         {
-            Gfx.remplirRectangle(resolution.Width / 2 - 225, resolution.Height / 2 - 75, 450, 250, 1, Color.White, Color.Red);
+            Gfx.remplirRectangle(resolution.Width / 2 - 225, resolution.Height / 2 - 125, 450, 250, 1, Color.White, Color.Red);
 
             // On crée un message de transition
             if (mancheActuelle < nbManches)
             {
-                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 30, Color.Red, "Fin de la manche {0} !", mancheActuelle);
-                if (gagnant_MancheActuelle != null)
-                    Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 20, 20, Color.Red, "Vainqueur de cette manche : Joueur {0} !", gagnant_MancheActuelle.getId());
+                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 100, 30, Color.Red, "Fin de la manche {0} !", mancheActuelle);
+                if (raisonFinManche > 0)
+                    Gfx.dessinerTexte(resolution.Width / 2 - 175, resolution.Height / 2 - 25, 20, Color.Red, "Vainqueur de cette manche : Joueur {0} !", joueurs[raisonFinManche - 1].getId());
                 else
-                    Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 20, 20, Color.Red, "Match nul.");
-                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 45, 15, Color.Black, "Début de la prochaine manche dans ...");
+                    Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 20, Color.Red, "Match nul.");
+                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 10, 15, Color.Black, "Début de la prochaine manche dans ...");
             }
 
             // On crée un message signalant la fin de la partie
             else
             {
-                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 30, Color.Red, "Fin de la partie !", mancheActuelle);
+                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 100, 30, Color.Red, "Fin de la partie !", mancheActuelle);
                 Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 10, 15, Color.Black, "Affichage des scores dans ...");
             }
-            Gfx.dessinerTexte(resolution.Width / 2 - 40, resolution.Height / 2 + 70, 25, Color.Black, "{0} secondes", (int)(10 - (temps_actuel - tempsFinManche).TotalSeconds));
+            Gfx.dessinerTexte(resolution.Width / 2 - 40, resolution.Height / 2 + 35, 25, Color.Black, "{0} secondes", (int)(10 - (temps_actuel - tempsFinManche).TotalSeconds));
         }
 
         public void mettreAJour()
         {
             DateTime temps_actuel = DateTime.Now;
             List<Joueur> joueurs_en_vie = joueurs.FindAll((j) => !j.estMort());
-            // Variables locales utilisées pour la fin de la manche
-            int raison_fin_manche = 0;
 
             // Si il ne reste aucun joueur en vie c'est la fin de la manche
             if (joueurs_en_vie.Count < 1)
@@ -209,8 +209,7 @@ namespace TNTMan.map
                     // Arrêter la musique
                     Sfx.ArreterJouerMusique();
                     // Un joueur a gagné
-                    raison_fin_manche = joueurs_en_vie[0].getId();
-                    gagnant_MancheActuelle = joueurs_en_vie[0];
+                    raisonFinManche = joueurs_en_vie[0].getId();
                 }
             }
 
@@ -226,7 +225,7 @@ namespace TNTMan.map
                 if ((temps_actuel - tempsFinManche).TotalSeconds >= 10)
                 {
                     tempsFinManche = DateTime.MinValue;
-                    finDeLaManche(raison_fin_manche);
+                    finDeLaManche();
                 }
             }
         }

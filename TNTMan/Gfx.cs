@@ -167,7 +167,6 @@ namespace TNTMan
                 SDL.SDL_DestroyWindow(fenetre);
                 fenetre = IntPtr.Zero;
             }
-            SDL.SDL_Quit();
         }
 
         internal static void nettoyerEcran(Color color)

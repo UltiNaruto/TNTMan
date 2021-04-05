@@ -1,7 +1,7 @@
-﻿using System;
+﻿using SDL2;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using TNTMan.entitees;
 
 namespace TNTMan.ecrans
@@ -10,14 +10,16 @@ namespace TNTMan.ecrans
     {
         List<Joueur> joueurs;
 
-        public Ecran_Score(List<Joueur> copie_liste_joueurs) : base("TNTMan - Scores", null)
+        public Ecran_Score(List<Joueur> liste_joueurs) : base("TNTMan - Scores", null)
         {
             Size resolution = Gfx.getResolution();
+            Size taille_rect_retour_mp = Gfx.getTailleRectangleTexte(18, "Revenir au menu principal");
+            Size taille_rect_quitter_jeu = Gfx.getTailleRectangleTexte(18, "Quitter le jeu");
             arrierePlan = Gfx.images["fond_ecran"];
-            boutons.Add(new Bouton(1, resolution.Width / 2 - 100, resolution.Height - 80, 18, "Revenir au menu principal"));
-            boutons.Add(new Bouton(2, resolution.Width / 2 - 100, resolution.Height - 40, 18, "Quitter le jeu"));
+            boutons.Add(new Bouton(0, resolution.Width / 2 - taille_rect_retour_mp.Width / 2, resolution.Height - 80, taille_rect_retour_mp.Width, taille_rect_retour_mp.Height, 18, "Revenir au menu principal"));
+            boutons.Add(new Bouton(100, resolution.Width / 2 - taille_rect_quitter_jeu.Width / 2, resolution.Height - 40, taille_rect_quitter_jeu.Width, taille_rect_quitter_jeu.Height, 18, "Quitter le jeu"));
             boutonSel = 0;
-            joueurs = copie_liste_joueurs;
+            joueurs = liste_joueurs;
         }
 
         public override void dessinerEcran(IntPtr rendu)
@@ -48,15 +50,17 @@ namespace TNTMan.ecrans
         public override void gererActionBouton(Bouton bouton)
         {
             // Retourner au menu principal
-            if (bouton.getId() == 1)
+            if (bouton.getId() == 0)
             {
                 Gfx.changerEcran(new Ecran_Titre());
             }
 
             // Quitter le jeu
-            if (bouton.getId() == 2)
+            if (bouton.getId() == 100)
             {
                 Gfx.deinitialiser_2d();
+                Sfx.deinitialiser_son();
+                SDL.SDL_Quit();
             }
         }
 
