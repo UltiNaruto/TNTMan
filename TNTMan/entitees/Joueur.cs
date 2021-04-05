@@ -252,6 +252,11 @@ namespace TNTMan.entitees
             return this.vitesse_deplacement;
         }
 
+        public Score getScore()
+        {
+            return score;
+        }
+
         public void reapparaitre(float x, float y)
         {
             this.position = new PointF(x, y);
