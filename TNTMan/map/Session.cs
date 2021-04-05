@@ -19,6 +19,7 @@ namespace TNTMan.map
         DateTime tempsDebutManche;
         DateTime tempsFinManche = DateTime.MinValue;
         long tempsMortSubite;
+        long tempsRestant;
 
         public Session(int nb_joueurs, int id_map, int nb_manches, long temps_imparti, long temps_mort_subite)
         {
@@ -64,8 +65,7 @@ namespace TNTMan.map
         {
             DateTime temps_actuel = DateTime.Now;
             Size resolution = Gfx.getResolution();
-            long temps_restant = tempsImparti - (long)(temps_actuel - tempsDebutManche).TotalSeconds;
-            Size cadre_temps_restant = Gfx.getTailleRectangleTexte(18, "Temps Restant : {0}:{1:D2}", temps_restant / 60, temps_restant % 60);
+            Size cadre_temps_restant = Gfx.getTailleRectangleTexte(18, "Temps Restant : {0}:{1:D2}", tempsRestant / 60, tempsRestant % 60);
             for (int x = 0; x < Map.LARGEUR_GRILLE; x++)
                 for (int y = 0; y < Map.LONGUEUR_GRILLE; y++)
                 {
@@ -90,7 +90,7 @@ namespace TNTMan.map
                 }
             }
 
-            Gfx.dessinerTexte(resolution.Width / 2 - cadre_temps_restant.Width / 2, 5, 18, Color.Black, "Temps Restant : {0}:{1:D2}", temps_restant / 60, temps_restant % 60);
+            Gfx.dessinerTexte(resolution.Width / 2 - cadre_temps_restant.Width / 2, 5, 18, Color.Black, "Temps Restant : {0}:{1:D2}", tempsRestant / 60, tempsRestant % 60);
 
             // Affichage du message de transition entre les manches
             if ((tempsFinManche > DateTime.MinValue) && (temps_actuel - tempsFinManche).TotalSeconds < 10)
@@ -105,8 +105,6 @@ namespace TNTMan.map
         void finDeLaManche(int raison)
         {
             PointApparition pointApparition = null;
-            // affiche la fin de la manche pendant 1.5 seconde
-            Thread.Sleep(1500);
 
             // si un joueur gagne
             if (raison > 0)
@@ -146,7 +144,7 @@ namespace TNTMan.map
             {
                 Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 30, Color.Red, "Fin de la manche {0} !", mancheActuelle);
                 Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 10, 15, Color.Black, "Début de la prochaine manche dans ...");
-                Gfx.dessinerTexte(resolution.Width / 2 - 40, resolution.Height / 2 + 30, 15, Color.Black, "{0} secondes", (int)(5 - (temps_actuel - tempsFinManche).TotalSeconds));
+                Gfx.dessinerTexte(resolution.Width / 2 - 40, resolution.Height / 2 + 30, 15, Color.Black, "{0} secondes", (int)(10 - (temps_actuel - tempsFinManche).TotalSeconds));
             }
             else
             {
@@ -166,25 +164,26 @@ namespace TNTMan.map
             if (joueurs_en_vie.Count < 1 || tempsImparti - (temps_actuel - tempsDebutManche).TotalSeconds <= 0)
             {
                 if (tempsFinManche == DateTime.MinValue)
-                    tempsFinManche = DateTime.Now;
+                    tempsFinManche = temps_actuel;
             }
             // Si il reste un joueur en vie il est déclaré vainqueur
             if (joueurs_en_vie.Count == 1)
             {
                 if(tempsFinManche == DateTime.MinValue)
-                    tempsFinManche = DateTime.Now;
+                    tempsFinManche = temps_actuel;
                 raison_fin_manche = joueurs_en_vie[0].getId();
             }
 
             // On met à jour la map si la fin de manche n'est pas signalé
             if (tempsFinManche == DateTime.MinValue)
             {
+                tempsRestant = tempsImparti - (long)(temps_actuel - tempsDebutManche).TotalSeconds;
                 map.mettreAJour();
             }
             else
             {
                 // On passe à la manche suivante au bout de 10 secondes
-                if((temps_actuel - tempsFinManche).TotalSeconds < 10)
+                if((temps_actuel - tempsFinManche).TotalSeconds >= 10)
                 {
                     tempsFinManche = DateTime.MinValue;
                     finDeLaManche(raison_fin_manche);

@@ -52,15 +52,13 @@ namespace TNTMan.ecrans
             foreach (Bouton bouton in boutons)
             {
                 if (bouton.curseurDans(new Point(x, y)))
-                    boutonSel = bouton.getId();
-            }
-            // si un bouton est sélectionné
-            if (boutonSel != -1)
-            {
-                // clic gauche détecté
-                if ((uint)(click & 1) == 1)
                 {
-                    gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
+                    boutonSel = bouton.getId();
+                    // clic gauche détecté
+                    if ((uint)(click & 1) == 1)
+                    {
+                        gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
+                    }
                 }
             }
         }

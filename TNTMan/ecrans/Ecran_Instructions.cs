@@ -27,7 +27,7 @@ namespace TNTMan.ecrans
             Size taille_rect_page = Gfx.getTailleRectangleTexte(18, "{0}", page + 1);
 
             Gfx.dessinerTexte(resolution.Width / 2 - taille_rect_titre.Width / 2, 60, 50, Color.Red, titre);
-            Gfx.dessinerTexte(resolution.Width / 2 - taille_rect_page.Width / 2, resolution.Height - 60, 18, Color.Black, "{0}", page + 1);
+            Gfx.dessinerTexte(resolution.Width / 2 - taille_rect_page.Width / 2, resolution.Height - 56, 18, Color.Black, "{0}", page + 1);
             if (page == 0)
             {
                 Gfx.dessinerTexte(45, 150, 20, Color.Blue, "Joueur 1");
@@ -58,6 +58,18 @@ namespace TNTMan.ecrans
             if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_ESCAPE] > 0)
             {
                 Gfx.changerEcran(ecranPrecedent);
+            }
+
+            // page précédente
+            if(etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_LEFT] > 0)
+            {
+                gererActionBouton(boutons.Find((b) => b.getId() == 0));
+            }
+
+            // page suivante
+            if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_RIGHT] > 0)
+            {
+                gererActionBouton(boutons.Find((b) => b.getId() == 1));
             }
 
             // Equivalent du clic gauche pour sélectionner un bouton dans le menu
