@@ -30,6 +30,13 @@ namespace TNTMan
                     { "bloc_2", chargerImage(@"images\blocs\bloc_2.png") },
                     // bombes
                     { "bombe", chargerImage(@"images\bombes\bombe.png") },
+                    // bonus
+                    { "bonus_bombe_plus", chargerImage(@"images\bonus\bonus_bombe_plus.png") },
+                    { "bonus_bombe_moins", chargerImage(@"images\bonus\bonus_bombe_moins.png") },
+                    { "bonus_portee_plus", chargerImage(@"images\bonus\bonus_portee_plus.png") },
+                    { "bonus_portee_moins", chargerImage(@"images\bonus\bonus_portee_moins.png") },
+                    { "bonus_vitesse_plus", chargerImage(@"images\bonus\bonus_vitesse_plus.png") },
+                    { "bonus_vitesse_moins", chargerImage(@"images\bonus\bonus_vitesse_moins.png") },
                     // joueurs
                     { "j1_haut", chargerImage(@"images\joueurs\1\haut.png") },
                     { "j1_bas", chargerImage(@"images\joueurs\1\bas.png") },
