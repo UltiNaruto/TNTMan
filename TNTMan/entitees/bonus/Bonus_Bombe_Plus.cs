@@ -9,7 +9,7 @@ namespace TNTMan.entitees.bonus
     {
         public Bonus_Bombe_Plus(Map _map, float x, float y) : base(_map, x, y)
         {
-
+            texture = Gfx.images["bonus_bombe_plus"];
         }
 
         public override string getNom()
@@ -25,7 +25,7 @@ namespace TNTMan.entitees.bonus
         public override void dessiner(IntPtr rendu)
         {
             Point _position = Map.getPositionEcranDepuis(position.X, position.Y, 16, 16);
-            Gfx.remplirRectangle(_position.X, _position.Y, 16, 16, 1, Color.MediumPurple, Color.Purple);
+            Gfx.dessinerImage(_position.X, _position.Y, 16, 16, texture);
         }
 
         public override void activer(Joueur joueur)

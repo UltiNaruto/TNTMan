@@ -25,6 +25,24 @@
     <None Update="images\bombes\bombe.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="images\bonus\bonus_bombe_moins.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="images\bonus\bonus_bombe_plus.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="images\bonus\bonus_portee_moins.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="images\bonus\bonus_portee_plus.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="images\bonus\bonus_vitesse_moins.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="images\bonus\bonus_vitesse_plus.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="images\explosion.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
