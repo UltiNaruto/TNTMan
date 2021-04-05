@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Threading;
 using TNTMan.ecrans;
 using TNTMan.entitees;
 using TNTMan.map.blocs;
@@ -11,6 +10,7 @@ namespace TNTMan.map
 {
     class Session
     {
+        String musique;
         List<Joueur> joueurs;
         Map map;
         int mancheActuelle;
@@ -25,6 +25,7 @@ namespace TNTMan.map
         {
             PointApparition pointApparition = null;
 
+            musique = @"jeu_"+Program.random.Next(1, 2);
             joueurs = new List<Joueur>();
             map = new Map();
             map.chargerMap(id_map);
@@ -59,6 +60,8 @@ namespace TNTMan.map
             tempsDebutManche = DateTime.Now;
             tempsImparti = temps_imparti;
             tempsMortSubite = temps_mort_subite;
+            Sfx.ArreterJouerMusique();
+            Sfx.JouerMusique(musique);
         }
 
         public void dessiner(IntPtr rendu)
@@ -128,6 +131,8 @@ namespace TNTMan.map
                 tempsDebutManche = DateTime.Now;
                 // On passe à la manche suivante
                 mancheActuelle++;
+                // Relancer la musique
+                Sfx.JouerMusique(musique);
             }
             else
             {
@@ -160,18 +165,39 @@ namespace TNTMan.map
             // Variables locales utilisées pour la fin de la manche
             int raison_fin_manche = 0;
 
-            // Si il ne reste aucun joueur en vie ou que le temps est écoulé c'est la fin de la manche
-            if (joueurs_en_vie.Count < 1 || tempsImparti - (temps_actuel - tempsDebutManche).TotalSeconds <= 0)
+            // Si il ne reste aucun joueur en vie c'est la fin de la manche
+            if (joueurs_en_vie.Count < 1)
             {
                 if (tempsFinManche == DateTime.MinValue)
+                {
                     tempsFinManche = temps_actuel;
+                    // Arrêter la musique
+                    Sfx.ArreterJouerMusique();
+                }
+            }
+            // Si le temps est écoulé c'est la fin de la manche
+            if (tempsImparti - (temps_actuel - tempsDebutManche).TotalSeconds < -1)
+            {
+                if (tempsFinManche == DateTime.MinValue)
+                {
+                    tempsFinManche = temps_actuel;
+                    // Arrêter la musique
+                    Sfx.ArreterJouerMusique();
+                    // On joue le son temps_ecoule en cas de fin de manche par temps écoulé
+                    Sfx.JouerSon("temps_ecoule");
+                }
             }
             // Si il reste un joueur en vie il est déclaré vainqueur
             if (joueurs_en_vie.Count == 1)
             {
-                if(tempsFinManche == DateTime.MinValue)
+                if (tempsFinManche == DateTime.MinValue)
+                {
                     tempsFinManche = temps_actuel;
-                raison_fin_manche = joueurs_en_vie[0].getId();
+                    // Arrêter la musique
+                    Sfx.ArreterJouerMusique();
+                    // Un joueur a gagné
+                    raison_fin_manche = joueurs_en_vie[0].getId();
+                }
             }
 
             // On met à jour la map si la fin de manche n'est pas signalé
@@ -183,7 +209,7 @@ namespace TNTMan.map
             else
             {
                 // On passe à la manche suivante au bout de 10 secondes
-                if((temps_actuel - tempsFinManche).TotalSeconds >= 10)
+                if ((temps_actuel - tempsFinManche).TotalSeconds >= 10)
                 {
                     tempsFinManche = DateTime.MinValue;
                     finDeLaManche(raison_fin_manche);

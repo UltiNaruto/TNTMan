@@ -17,43 +17,43 @@ namespace TNTMan
 
         internal static Dictionary<String, IntPtr> images;
 
-        internal static int prechargerImages()
+        static int prechargerImages()
         {
             try
             {
                 images = new Dictionary<String, IntPtr>()
                 {
-                    { "explosion", chargerImage(@"images\explosion.png") },
-                    { "fond_ecran", chargerImage(@"images\fond_ecran.png") },
+                    { "explosion", chargerImage(@"res\images\explosion.png") },
+                    { "fond_ecran", chargerImage(@"res\images\fond_ecran.png") },
                     // blocs
-                    { "bloc_1", chargerImage(@"images\blocs\bloc_1.png") },
-                    { "bloc_2", chargerImage(@"images\blocs\bloc_2.png") },
+                    { "bloc_1", chargerImage(@"res\images\blocs\bloc_1.png") },
+                    { "bloc_2", chargerImage(@"res\images\blocs\bloc_2.png") },
                     // bombes
-                    { "bombe", chargerImage(@"images\bombes\bombe.png") },
+                    { "bombe", chargerImage(@"res\images\bombes\bombe.png") },
                     // bonus
-                    { "bonus_bombe_plus", chargerImage(@"images\bonus\bonus_bombe_plus.png") },
-                    { "bonus_bombe_moins", chargerImage(@"images\bonus\bonus_bombe_moins.png") },
-                    { "bonus_portee_plus", chargerImage(@"images\bonus\bonus_portee_plus.png") },
-                    { "bonus_portee_moins", chargerImage(@"images\bonus\bonus_portee_moins.png") },
-                    { "bonus_vitesse_plus", chargerImage(@"images\bonus\bonus_vitesse_plus.png") },
-                    { "bonus_vitesse_moins", chargerImage(@"images\bonus\bonus_vitesse_moins.png") },
+                    { "bonus_bombe_plus", chargerImage(@"res\images\bonus\bombe+.png") },
+                    { "bonus_bombe_moins", chargerImage(@"res\images\bonus\bombe-.png") },
+                    { "bonus_portee_plus", chargerImage(@"res\images\bonus\portee+.png") },
+                    { "bonus_portee_moins", chargerImage(@"res\images\bonus\portee-.png") },
+                    { "bonus_vitesse_plus", chargerImage(@"res\images\bonus\vitesse+.png") },
+                    { "bonus_vitesse_moins", chargerImage(@"res\images\bonus\vitesse-.png") },
                     // joueurs
-                    { "j1_haut", chargerImage(@"images\joueurs\1\haut.png") },
-                    { "j1_bas", chargerImage(@"images\joueurs\1\bas.png") },
-                    { "j1_gauche", chargerImage(@"images\joueurs\1\gauche.png") },
-                    { "j1_droite", chargerImage(@"images\joueurs\1\droite.png") },
-                    { "j2_haut", chargerImage(@"images\joueurs\2\haut.png") },
-                    { "j2_bas", chargerImage(@"images\joueurs\2\bas.png") },
-                    { "j2_gauche", chargerImage(@"images\joueurs\2\gauche.png") },
-                    { "j2_droite", chargerImage(@"images\joueurs\2\droite.png") },
-                    { "j3_haut", chargerImage(@"images\joueurs\3\haut.png") },
-                    { "j3_bas", chargerImage(@"images\joueurs\3\bas.png") },
-                    { "j3_gauche", chargerImage(@"images\joueurs\3\gauche.png") },
-                    { "j3_droite", chargerImage(@"images\joueurs\3\droite.png") },
-                    { "j4_haut", chargerImage(@"images\joueurs\4\haut.png") },
-                    { "j4_bas", chargerImage(@"images\joueurs\4\bas.png") },
-                    { "j4_gauche", chargerImage(@"images\joueurs\4\gauche.png") },
-                    { "j4_droite", chargerImage(@"images\joueurs\4\droite.png") }
+                    { "j1_haut", chargerImage(@"res\images\joueurs\1\haut.png") },
+                    { "j1_bas", chargerImage(@"res\images\joueurs\1\bas.png") },
+                    { "j1_gauche", chargerImage(@"res\images\joueurs\1\gauche.png") },
+                    { "j1_droite", chargerImage(@"res\images\joueurs\1\droite.png") },
+                    { "j2_haut", chargerImage(@"res\images\joueurs\2\haut.png") },
+                    { "j2_bas", chargerImage(@"res\images\joueurs\2\bas.png") },
+                    { "j2_gauche", chargerImage(@"res\images\joueurs\2\gauche.png") },
+                    { "j2_droite", chargerImage(@"res\images\joueurs\2\droite.png") },
+                    { "j3_haut", chargerImage(@"res\images\joueurs\3\haut.png") },
+                    { "j3_bas", chargerImage(@"res\images\joueurs\3\bas.png") },
+                    { "j3_gauche", chargerImage(@"res\images\joueurs\3\gauche.png") },
+                    { "j3_droite", chargerImage(@"res\images\joueurs\3\droite.png") },
+                    { "j4_haut", chargerImage(@"res\images\joueurs\4\haut.png") },
+                    { "j4_bas", chargerImage(@"res\images\joueurs\4\bas.png") },
+                    { "j4_gauche", chargerImage(@"res\images\joueurs\4\gauche.png") },
+                    { "j4_droite", chargerImage(@"res\images\joueurs\4\droite.png") }
                 };
 
                 return 0;
@@ -64,12 +64,6 @@ namespace TNTMan
 
         internal static int initialiser_2d()
         {
-            if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_AUDIO) != 0)
-            {
-                Program.MessageErr("SDL_Init: ERREUR ({0})\n", SDL.SDL_GetError());
-                return 1;
-            }
-
             fenetre = SDL.SDL_CreateWindow("TNTMan", SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
             if (fenetre == IntPtr.Zero)
             {
@@ -150,6 +144,9 @@ namespace TNTMan
 
         internal static void deinitialiser_2d()
         {
+            foreach (var image in images)
+                SDL.SDL_DestroyTexture(image.Value);
+            images.Clear();
             SDL_image.IMG_Quit();
             for(int i = 0;i<73;i++)
             {

@@ -25,7 +25,7 @@ namespace TNTMan.entitees
             position = new PointF(_x, _y);
             vitesse_deplacement = 0.05f;
             portee_bombe = 1;
-            nb_bombes = max_nb_bombes = 2;
+            nb_bombes = max_nb_bombes = 1;
             if (id == 1)
                 texture = Gfx.images["j1_bas"];
             if (id == 2)

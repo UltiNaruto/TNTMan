@@ -32,7 +32,7 @@ namespace TNTMan
                 { "Portee-", 1 },
                 { "Bombe+", 5 },
                 { "Bombe-", 1 },
-                { "Vide", 50 }
+                { "Vide", 30 }
             };
 
             int nombre = Program.random.Next(0, dict_bonus.Values.Sum());

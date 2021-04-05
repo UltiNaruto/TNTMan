@@ -56,7 +56,7 @@ namespace TNTMan.map
             {
                 return listeBlocs[x, y];
             }
-            catch(IndexOutOfRangeException ex)
+            catch
             {
                 return null;
             }
@@ -93,8 +93,8 @@ namespace TNTMan.map
         {
             Size resolution = Gfx.getResolution();
             Size tailleGrille = new Size(Map.LARGEUR_GRILLE * Bloc.TAILLE_BLOC, Map.LONGUEUR_GRILLE * Bloc.TAILLE_BLOC);
-            float dw = (Bloc.TAILLE_BLOC - w) / 2;
-            float dh = (Bloc.TAILLE_BLOC - h) / 2;
+            float dw = ((float)Bloc.TAILLE_BLOC - w) / 2.0f;
+            float dh = ((float)Bloc.TAILLE_BLOC - h) / 2.0f;
             return new Point((int)((resolution.Width - tailleGrille.Width) / 2 + x * Bloc.TAILLE_BLOC - dw), (int)((resolution.Height - tailleGrille.Height) / 2 + y * Bloc.TAILLE_BLOC - dh));
         }
 
@@ -131,8 +131,9 @@ namespace TNTMan.map
             listeEntitesAAjouter.Clear();
         }
 
-        internal void chargerMap(int id)
+        internal void chargerMap(int _id)
         {
+            id = _id;
             String chemin = String.Format("maps/{0}.bma", id);
             if (id == 0)
                 chargerMapParDefaut();

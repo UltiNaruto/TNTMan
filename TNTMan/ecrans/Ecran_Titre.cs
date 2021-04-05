@@ -15,6 +15,8 @@ namespace TNTMan.ecrans
             boutons.Add(new Bouton(1, resolution.Width / 2 - 100, resolution.Height / 2 - 50, 18, "Instructions"));
             boutons.Add(new Bouton(2, resolution.Width / 2 - 100, resolution.Height / 2, 18, "Options"));
             boutons.Add(new Bouton(100, resolution.Width / 2 - 100, resolution.Height / 2 + 150, 18, "Quitter"));
+            Sfx.ArreterJouerMusique();
+            Sfx.JouerMusique("titre");
             boutonSel = 0;
         }
 
@@ -81,6 +83,7 @@ namespace TNTMan.ecrans
             // Quitter
             if (bouton.getId() == 100)
             {
+                Sfx.deinitialiser_son();
                 Gfx.deinitialiser_2d();
             }
         }

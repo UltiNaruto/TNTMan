@@ -22,13 +22,26 @@ namespace TNTMan
         static void Main(string[] args)
         {
             random = new Random((int)DateTime.Now.Ticks);
+
+            if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) != 0)
+            {
+                MessageErr("SDL_Init: ERREUR ({0})\n", SDL.SDL_GetError());
+                return;
+            }
+
+            if (Sfx.initialiser_son() != 0)
+            {
+                MessageErr("Son non initialisé! Fermeture...");
+                return;
+            }
+
             if (Gfx.initialiser_2d() != 0)
             {
                 MessageErr("2D non initialisé! Fermeture...");
                 return;
             }
 
-            while(SDL.SDL_WasInit(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_AUDIO) != 0)
+            while (SDL.SDL_WasInit(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_AUDIO) != 0)
             {
                 Gfx.nettoyerEcran(Color.Black);
                 Gfx.debut2D();

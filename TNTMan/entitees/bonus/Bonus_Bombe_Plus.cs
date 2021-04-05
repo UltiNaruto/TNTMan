@@ -24,8 +24,8 @@ namespace TNTMan.entitees.bonus
 
         public override void dessiner(IntPtr rendu)
         {
-            Point _position = Map.getPositionEcranDepuis(position.X, position.Y, 16, 16);
-            Gfx.dessinerImage(_position.X, _position.Y, 16, 16, texture);
+            Point _position = Map.getPositionEcranDepuis((int)position.X, (int)position.Y, 32, 32);
+            Gfx.dessinerImage(_position.X, _position.Y, 32, 32, texture);
         }
 
         public override void activer(Joueur joueur)
@@ -33,6 +33,7 @@ namespace TNTMan.entitees.bonus
             // L'effet par défaut du bonus est d'augmenter le nombre de bombes de 1
             joueur.incrementerMaxBombe();
             joueur.incrementerBombe();
+            Sfx.JouerSon("bonus_bombe_plus");
         }
     }
 }

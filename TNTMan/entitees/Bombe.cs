@@ -57,6 +57,8 @@ namespace TNTMan.entitees
 
             // Disparition de la bombe
             tuer();
+            // Jouer le son de l'explosion
+            Sfx.JouerSon("explosion");
             // Apparition des flammes de l'explosion de la bombe
             map.ajoutEntite(new Flamme(_x, _y, proprietaire, map));
             for (int x = _x - 1; x >= _x - portee; x--)
