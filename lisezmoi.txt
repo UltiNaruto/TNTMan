@@ -3,7 +3,7 @@
 - Sur MOODLE : Le jeu est disponible sous le nom TNTMan.exe. Vous le trouverez dans le dossier TNTMan\bin\Debug\netcoreapp3.1 .
 Voici le lien github (ouvert au public à partir du 06/04/21) : https://github.com/UltiNaruto/TNTMan
 
-- ICI : au lien https://github.com/UltiNaruto/TNTMan, cliquer sur Version 1.0 dans Releases. Les deux premiers fichiers zip contiennet l'exécutable TNTMan.exe (dans le dossier courant).
+- ICI : au lien https://github.com/UltiNaruto/TNTMan, cliquer sur Version 1.0 dans Releases. Les deux premiers fichiers zip contiennent l'exécutable TNTMan.exe (dans le dossier courant).
 
 * CONTEXTE DES TEST :
 
