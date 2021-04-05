@@ -44,6 +44,11 @@ namespace TNTMan.ecrans
             // On affiche le numéro du gagnant
             Gfx.dessinerTexte(resolution.Width / 2 - 150, 100 + ecart, 20, Color.DarkGreen, "Le gagnant est ...");
             Gfx.dessinerTexte(resolution.Width / 2 - 70, 120 + ecart, 30, Color.DarkGreen, "Joueur n°{0} !", getGagnantID());
+
+            foreach (Bouton bouton in boutons)
+            {
+                bouton.dessiner(rendu, bouton.getId() == boutonSel);
+            }
         }
 
         public override void gererActionBouton(Bouton bouton)

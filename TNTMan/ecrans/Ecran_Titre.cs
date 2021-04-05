@@ -25,6 +25,10 @@ namespace TNTMan.ecrans
             base.dessinerEcran(rendu);
             Size resolution = Gfx.getResolution();
             Gfx.dessinerTexte(resolution.Width / 2 - 100, 60, 50, Color.Red, titre);
+            foreach (Bouton bouton in boutons)
+            {
+                bouton.dessiner(rendu, bouton.getId() == boutonSel);
+            }
         }
 
         public override void gererTouches(byte[] etats)

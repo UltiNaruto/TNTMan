@@ -50,6 +50,11 @@ namespace TNTMan.ecrans
                 Gfx.dessinerTexte(45, 330, 20, Color.Pink, "Pavé numérique 1 (gauche), Pavé numérique 3 (droite)");
                 Gfx.dessinerTexte(45, 360, 20, Color.Pink, "Poser une bombe : Pavé numérique 6");
             }
+
+            foreach (Bouton bouton in boutons)
+            {
+                bouton.dessiner(rendu, bouton.getId() == boutonSel);
+            }
         }
 
         public override void gererTouches(byte[] etats)

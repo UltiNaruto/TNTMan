@@ -67,6 +67,10 @@ namespace TNTMan.ecrans
 
             Gfx.dessinerTexte(resolution.Width / 2 - taille_rect_temps_manche.Width / 2, 260, 24, Color.Black, lbl_temps_manche);
             Gfx.dessinerTexte(resolution.Width / 2 - taille_rect_temps_manche_val.Width / 2, 295, 20, Color.Black, "{0}:{1:00}", temps_manche / 60, temps_manche % 60);
+            foreach (Bouton bouton in boutons)
+            {
+                bouton.dessiner(rendu, bouton.getId() == boutonSel);
+            }
         }
 
         public override void gererTouches(byte[] etats)

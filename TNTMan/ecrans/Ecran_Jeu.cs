@@ -12,6 +12,7 @@ namespace TNTMan.ecrans
         public Ecran_Jeu(Session _session) : base("Jeu", null)
         {
             session = _session;
+            session.setEcranJeu(this);
             arrierePlan = Gfx.images["fond_ecran"];
         }
 
@@ -31,12 +32,13 @@ namespace TNTMan.ecrans
             session.mettreAJour();
         }
 
+        public void retourEnJeu(long duree)
+        {
+            session.retourEnJeu(duree);
+        }
+
         public void mettreAJour()
         {
-            if (session.enPause)
-            {
-                Gfx.changerEcran(new Ecran_Pause(this));
-            }
         }
     }
 }

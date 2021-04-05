@@ -22,6 +22,7 @@ namespace TNTMan.map
         long tempsMortSubite;
         long tempsRestant;
         int raisonFinManche = 0;
+        Ecran_Jeu ecranJeu = null;
         public bool enPause = false;
 
         public Session(int nb_joueurs, int id_map, int nb_manches, long temps_imparti, long temps_mort_subite)
@@ -65,6 +66,16 @@ namespace TNTMan.map
             tempsMortSubite = temps_mort_subite;
             Sfx.ArreterJouerMusique();
             Sfx.JouerMusique(musique);
+        }
+
+        internal void setEcranJeu(Ecran_Jeu ecran_jeu)
+        {
+            this.ecranJeu = ecran_jeu;
+        }
+
+        internal void retourEnJeu(long duree)
+        {
+            tempsDebutManche = tempsDebutManche.AddMilliseconds(duree);
         }
 
         public void dessiner(IntPtr rendu)
@@ -114,7 +125,7 @@ namespace TNTMan.map
             // Bouton ECHAP pour faire pause
             if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_ESCAPE] > 0)
             {
-                enPause = true;
+                Gfx.changerEcran(new Ecran_Pause(ecranJeu));
             }
         }
 
