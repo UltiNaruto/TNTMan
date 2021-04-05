@@ -205,7 +205,7 @@ namespace TNTMan
             int nb_etats = 0;
             byte[] etats = Utils.PtrToArray(SDL.SDL_GetKeyboardState(out nb_etats), nb_etats);
             if (ecranActuel == null || etats == null) return;
-            if (ecranActuel.GetType() == typeof(Ecran_Jouer) || (temps_actuel - temps_derniere_pression_touche).TotalMilliseconds >= 100)
+            if (ecranActuel.GetType() == typeof(Ecran_Jeu) || (temps_actuel - temps_derniere_pression_touche).TotalMilliseconds >= 100)
             {
                 ecranActuel.gererSouris();
                 ecranActuel.gererTouches(etats);

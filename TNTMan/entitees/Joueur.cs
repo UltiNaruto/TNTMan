@@ -233,7 +233,7 @@ namespace TNTMan.entitees
             if (map.trouverEntite(position_bombe.X, position_bombe.Y, typeof(Bombe)).Count() > 0)
                 return null;
 
-            if ((temps_actuel - temps_avant_derniere_bombe_poser).TotalMilliseconds >= 100)
+            if ((temps_actuel - temps_avant_derniere_bombe_poser).TotalMilliseconds >= 80)
             {
                 decrementerBombe();
                 temps_avant_derniere_bombe_poser = temps_actuel;

@@ -28,6 +28,10 @@ namespace TNTMan.ecrans
             Size resolution = Gfx.getResolution();
             if (arrierePlan == IntPtr.Zero) return;
             Gfx.dessinerImage(0, 0, resolution.Width, resolution.Height, arrierePlan);
+            foreach (Bouton bouton in boutons)
+            {
+                bouton.dessiner(rendu, bouton.getId() == boutonSel);
+            }
         }
 
         public void gererSouris()

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using TNTMan.ecrans;
 using TNTMan.entitees;
 using TNTMan.map.blocs;
@@ -99,6 +100,8 @@ namespace TNTMan.map
         void finDeLaManche(int raison)
         {
             PointApparition pointApparition = null;
+            // affiche la fin de la manche pendant 1.5 seconde
+            Thread.Sleep(1500);
 
             // si un joueur gagne
             if (raison > 0)

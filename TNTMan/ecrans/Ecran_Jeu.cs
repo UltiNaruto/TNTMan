@@ -5,13 +5,13 @@ using TNTMan.map.blocs;
 
 namespace TNTMan.ecrans
 {
-    class Ecran_Jouer : Ecran
+    class Ecran_Jeu : Ecran
     {
         Session session = null;
 
-        public Ecran_Jouer() : base("Jeu", null)
+        public Ecran_Jeu(Session _session) : base("Jeu", null)
         {
-            session = new Session(4, 0, 3, 180, 30);
+            session = _session;
             arrierePlan = Gfx.images["fond_ecran"];
         }
 

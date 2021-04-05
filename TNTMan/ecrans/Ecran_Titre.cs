@@ -23,10 +23,6 @@ namespace TNTMan.ecrans
             base.dessinerEcran(rendu);
             Size resolution = Gfx.getResolution();
             Gfx.dessinerTexte(resolution.Width / 2 - 100, 60, 50, Color.Red, titre);
-            foreach (Bouton bouton in boutons)
-            {
-                bouton.dessiner(rendu, bouton.getId() == boutonSel);
-            }
         }
 
         public override void gererTouches(byte[] etats)
@@ -57,6 +53,10 @@ namespace TNTMan.ecrans
                 {
                     boutonSel = boutons.Find((b) => b.getId() > boutonSel).getId();
                 }
+            } // Retour au menu précédent
+            else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_ESCAPE] > 0)
+            {
+                Gfx.changerEcran(ecranPrecedent);
             } // Equivalent du clic gauche pour sélectionner un bouton dans le menu
             else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_RETURN] > 0)
             {
@@ -69,7 +69,7 @@ namespace TNTMan.ecrans
             // Jouer
             if (bouton.getId() == 0)
             {
-                Gfx.changerEcran(new Ecran_Jouer());
+                Gfx.changerEcran(new Ecran_ConfigPartie(this));
             }
 
             // Consulter les instructions
