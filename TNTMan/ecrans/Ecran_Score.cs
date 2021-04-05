@@ -14,10 +14,9 @@ namespace TNTMan.ecrans
         {
             Size resolution = Gfx.getResolution();
             Size taille_rect_retour_mp = Gfx.getTailleRectangleTexte(18, "Revenir au menu principal");
-            Size taille_rect_quitter_jeu = Gfx.getTailleRectangleTexte(18, "Quitter le jeu");
             arrierePlan = Gfx.images["fond_ecran"];
-            boutons.Add(new Bouton(0, resolution.Width / 2 - taille_rect_retour_mp.Width / 2, resolution.Height - 80, taille_rect_retour_mp.Width, taille_rect_retour_mp.Height, 18, "Revenir au menu principal"));
-            boutons.Add(new Bouton(100, resolution.Width / 2 - taille_rect_quitter_jeu.Width / 2, resolution.Height - 40, taille_rect_quitter_jeu.Width, taille_rect_quitter_jeu.Height, 18, "Quitter le jeu"));
+            boutons.Add(new Bouton(0, resolution.Width / 2 - taille_rect_retour_mp.Width / 2, resolution.Height - 80, taille_rect_retour_mp.Width + 20, 20, 18, "Revenir au menu principal"));
+            boutons.Add(new Bouton(100, resolution.Width / 2 - taille_rect_retour_mp.Width / 2, resolution.Height - 40, taille_rect_retour_mp.Width + 20, 20, 18, "Quitter le jeu"));
             boutonSel = 0;
             joueurs = liste_joueurs;
         }

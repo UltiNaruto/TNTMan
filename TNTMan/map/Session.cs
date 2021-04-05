@@ -153,21 +153,20 @@ namespace TNTMan.map
         {
             Gfx.remplirRectangle(resolution.Width / 2 - 225, resolution.Height / 2 - 125, 450, 250, 1, Color.White, Color.Red);
 
+            Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 100, 30, Color.Red, "Fin de la manche {0} !", mancheActuelle);
+            if (raisonFinManche > 0)
+                Gfx.dessinerTexte(resolution.Width / 2 - 175, resolution.Height / 2 - 25, 20, Color.Red, "Vainqueur de cette manche : Joueur {0} !", joueurs[raisonFinManche - 1].getId());
+            else
+                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 20, Color.Red, "Match nul.");
+
             // On crée un message de transition
             if (mancheActuelle < nbManches)
             {
-                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 100, 30, Color.Red, "Fin de la manche {0} !", mancheActuelle);
-                if (raisonFinManche > 0)
-                    Gfx.dessinerTexte(resolution.Width / 2 - 175, resolution.Height / 2 - 25, 20, Color.Red, "Vainqueur de cette manche : Joueur {0} !", joueurs[raisonFinManche - 1].getId());
-                else
-                    Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 20, Color.Red, "Match nul.");
                 Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 10, 15, Color.Black, "Début de la prochaine manche dans ...");
             }
-
             // On crée un message signalant la fin de la partie
             else
             {
-                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 100, 30, Color.Red, "Fin de la partie !", mancheActuelle);
                 Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 10, 15, Color.Black, "Affichage des scores dans ...");
             }
             Gfx.dessinerTexte(resolution.Width / 2 - 40, resolution.Height / 2 + 35, 25, Color.Black, "{0} secondes", (int)(10 - (temps_actuel - tempsFinManche).TotalSeconds));

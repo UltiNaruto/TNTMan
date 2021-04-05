@@ -85,8 +85,8 @@ namespace TNTMan
 
             SDL_mixer.Mix_AllocateChannels(sons.Count);
             ArreterJouerSons();
-            ReglerVolumeSons(3);
-            ReglerVolumeMusique(3);
+            ReglerVolumeSons(50);
+            ReglerVolumeMusique(50);
 
             return 0;
         }

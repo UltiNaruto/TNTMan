@@ -134,8 +134,10 @@ namespace TNTMan
             int w, h;
             if(rendu == IntPtr.Zero)
             {
-                Program.MessageErr("Impossible d'obtenir la taille de la fenêtre");
+                //Program.MessageErr("Impossible d'obtenir la taille de la fenêtre");
+                Sfx.deinitialiser_son();
                 deinitialiser_2d();
+                SDL.SDL_Quit();
                 return new Size(-1, -1);
             }
             SDL.SDL_GetRendererOutputSize(rendu, out w, out h);
