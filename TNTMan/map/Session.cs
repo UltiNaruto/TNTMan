@@ -92,7 +92,7 @@ namespace TNTMan.map
             Gfx.dessinerTexte(resolution.Width / 2 - cadre_temps_restant.Width / 2, 5, 18, Color.Black, "Temps Restant : {0}:{1:D2}", temps_restant / 60, temps_restant % 60);
 
             // Affichage du message de transition entre les manches
-            if ((tempsFinManche > DateTime.MinValue) && (tempsFinManche - temps_actuel).TotalSeconds > -5)
+            if ((tempsFinManche > DateTime.MinValue) && (temps_actuel - tempsFinManche).TotalSeconds < 10)
                 afficherTransition(resolution, temps_actuel);
         }
 
@@ -141,7 +141,6 @@ namespace TNTMan.map
             Gfx.remplirRectangle(resolution.Width / 2 - 225, resolution.Height / 2 - 75, 450, 150, 1, Color.White, Color.Red);
             if(mancheActuelle < nbManches)
             {
-
                 Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 30, Color.Red, "Fin de la manche {0} !", mancheActuelle);
                 Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 10, 15, Color.Black, "Début de la prochaine manche dans ...");
                 Gfx.dessinerTexte(resolution.Width / 2 - 40, resolution.Height / 2 + 30, 15, Color.Black, "{0} secondes", (int)(5 - (temps_actuel - tempsFinManche).TotalSeconds));
@@ -174,15 +173,20 @@ namespace TNTMan.map
                 raison_fin_manche = joueurs_en_vie[0].getId();
             }
 
-            // On passe à la manche suivante au bout de 10 secondes
-            if (tempsFinManche > DateTime.MinValue && (tempsFinManche - temps_actuel).TotalSeconds < -5)
+            // On met à jour la map si la fin de manche n'est pas signalé
+            if (tempsFinManche == DateTime.MinValue)
             {
-                tempsFinManche = DateTime.MinValue;
-                finDeLaManche(raison_fin_manche);
+                map.mettreAJour();
             }
-
-
-            map.mettreAJour();
+            else
+            {
+                // On passe à la manche suivante au bout de 10 secondes
+                if((temps_actuel - tempsFinManche).TotalSeconds < 10)
+                {
+                    tempsFinManche = DateTime.MinValue;
+                    finDeLaManche(raison_fin_manche);
+                }
+            }
         }
     }
 }
