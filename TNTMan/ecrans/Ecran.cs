@@ -57,6 +57,7 @@ namespace TNTMan.ecrans
                     // clic gauche détecté
                     if ((uint)(click & 1) == 1)
                     {
+                        Sfx.JouerSon("clic_bouton");
                         gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
                     }
                 }

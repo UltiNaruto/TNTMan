@@ -13,7 +13,7 @@ namespace TNTMan.ecrans
             arrierePlan = Gfx.images["fond_ecran"];
             boutons.Add(new Bouton(0, resolution.Width / 2 - 100, resolution.Height / 2 - 100, 18, "Nouvelle Partie"));
             boutons.Add(new Bouton(1, resolution.Width / 2 - 100, resolution.Height / 2 - 50, 18, "Instructions"));
-            boutons.Add(new Bouton(2, resolution.Width / 2 - 100, resolution.Height / 2, 18, "Options"));
+            //boutons.Add(new Bouton(2, resolution.Width / 2 - 100, resolution.Height / 2, 18, "Options"));
             boutons.Add(new Bouton(100, resolution.Width / 2 - 100, resolution.Height / 2 + 150, 18, "Quitter"));
             Sfx.ArreterJouerMusique();
             Sfx.JouerMusique("titre");
@@ -62,7 +62,11 @@ namespace TNTMan.ecrans
             } // Equivalent du clic gauche pour sélectionner un bouton dans le menu
             else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_RETURN] > 0)
             {
-                gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
+                if (boutonSel != -1)
+                {
+                    Sfx.JouerSon("clic_bouton");
+                    gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
+                }
             }
         }
 

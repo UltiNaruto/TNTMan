@@ -100,7 +100,11 @@ namespace TNTMan.ecrans
             } // Equivalent du clic gauche pour sélectionner un bouton dans le menu
             else if (etats[(int)SDL.SDL_Scancode.SDL_SCANCODE_RETURN] > 0)
             {
-                gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
+                if (boutonSel != -1)
+                {
+                    Sfx.JouerSon("clic_bouton");
+                    gererActionBouton(boutons.Find((b) => b.getId() == boutonSel));
+                }
             }
         }
 

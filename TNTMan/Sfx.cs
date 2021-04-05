@@ -26,7 +26,9 @@ namespace TNTMan
                     { "bonus_bombe_plus", SDL_mixer.Mix_LoadWAV(@"res\sons\bonus\bombe+.wav") },
                     { "bonus_bombe_moins", SDL_mixer.Mix_LoadWAV(@"res\sons\bonus\bombe-.wav") },
                     // explosion
-                    { "explosion", SDL_mixer.Mix_LoadWAV(@"res\sons\explosion.wav") }
+                    { "explosion", SDL_mixer.Mix_LoadWAV(@"res\sons\bombes\explosion.wav") },
+                    // boutons
+                    { "clic_bouton", SDL_mixer.Mix_LoadWAV(@"res\sons\clic_bouton.wav") }
                 };
                 return 0;
             }
