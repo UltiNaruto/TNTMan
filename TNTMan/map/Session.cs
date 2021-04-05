@@ -98,10 +98,7 @@ namespace TNTMan.map
             // Affichage du message de transition entre les manches
             if ((tempsFinManche > DateTime.MinValue) && (temps_actuel - tempsFinManche).TotalSeconds < 10)
             {
-                if (mancheActuelle < nbManches)
-                    afficherTransition(resolution, temps_actuel);
-                else
-                    afficherScores(resolution);
+                afficherTransition(resolution, temps_actuel);
             }
         }
 
@@ -142,53 +139,28 @@ namespace TNTMan.map
             else
             {
                 // fin de la partie
-                Gfx.changerEcran(new Ecran_Titre());
+                Gfx.changerEcran(new Ecran_Score(joueurs));
             }
         }
 
         public void afficherTransition(Size resolution, DateTime temps_actuel)
         {
-            // On crée un message de transition
             Gfx.remplirRectangle(resolution.Width / 2 - 225, resolution.Height / 2 - 75, 450, 150, 1, Color.White, Color.Red);
-            Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 30, Color.Red, "Fin de la manche {0} !", mancheActuelle);
-            Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 10, 15, Color.Black, "Début de la prochaine manche dans ...");
+
+            // On crée un message de transition
+            if (mancheActuelle < nbManches)
+            {
+                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 30, Color.Red, "Fin de la manche {0} !", mancheActuelle);
+                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 10, 15, Color.Black, "Début de la prochaine manche dans ...");
+            }
+
+            // On crée un message signalant la fin de la partie
+            else
+            {
+                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 - 25, 30, Color.Red, "Fin de la partie !", mancheActuelle);
+                Gfx.dessinerTexte(resolution.Width / 2 - 150, resolution.Height / 2 + 10, 15, Color.Black, "Affichage des scores dans ...");
+            }
             Gfx.dessinerTexte(resolution.Width / 2 - 40, resolution.Height / 2 + 30, 15, Color.Black, "{0} secondes", (int)(10 - (temps_actuel - tempsFinManche).TotalSeconds));
-        }
-
-        public void afficherScores(Size resolution)
-        {
-            int ecart = 30;
-            // On crée un panneau des scores
-            Gfx.remplirRectangle(resolution.Width / 2 - 235, 10, 500, resolution.Height - 20, 1, Color.White, Color.Red);
-            Gfx.dessinerTexte(resolution.Width / 2 - 120, 30, 30, Color.Red, "FIN DE LA PARTIE !");
-            // On affiche l'en-tête du tableau des scores
-            Gfx.dessinerTexte(resolution.Width / 2 - 210, 70, 20, Color.DarkGreen, "Joueur");
-            Gfx.dessinerTexte(resolution.Width / 2 - 130, 70, 20, Color.DarkGreen, "Nombre de victoires");
-            Gfx.dessinerTexte(resolution.Width / 2 + 80, 70, 20, Color.DarkGreen, "Nombre de tués");
-            // On affiche les scores pour tous les joueurs
-            foreach(Joueur j in joueurs)
-            {
-                Gfx.dessinerTexte(resolution.Width / 2 - 210, 70 + ecart, 20, Color.Black, "{0}", j.getId());
-                Gfx.dessinerTexte(resolution.Width / 2 - 130, 70 + ecart, 20, Color.Black, "{0}", j.getScore().getNbVictoires());
-                Gfx.dessinerTexte(resolution.Width / 2 + 80, 70 + ecart, 20, Color.Black, "{0}", j.getScore().getNbTues());
-                ecart += 20;
-            }
-            // On affiche le numéro du gagnant
-            Gfx.dessinerTexte(resolution.Width / 2 - 150, (resolution.Height - 20) * 3 / 4, 20, Color.DarkGreen, "Le gagnant est ...");
-            Gfx.dessinerTexte(resolution.Width / 2 - 70, (resolution.Height - 20) * 3 / 4 + 20, 30, Color.DarkGreen, "Joueur n°{0} !", getGagnantID());
-        }
-
-        public int getGagnantID()
-        {
-            Joueur gagnant = joueurs[0];
-            for(int i = 1; i<joueurs.Count; i++)
-            {
-                if (gagnant.getScore().getNbVictoires() < joueurs[i].getScore().getNbVictoires())
-                    gagnant = joueurs[i];
-                else if (gagnant.getScore().getNbVictoires() == joueurs[i].getScore().getNbVictoires() && gagnant.getScore().getNbTues() < joueurs[i].getScore().getNbTues())
-                    gagnant = joueurs[i];
-            }
-            return gagnant.getId();
         }
 
         public void mettreAJour()
